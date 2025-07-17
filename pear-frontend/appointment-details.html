@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kundentermin - PEAR</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="header">
+        <h1>PEAR</h1>
+        <p>Professionelle Einsatz-, Abrechnungs- und Ressourcenverwaltung</p>
+    </header>
+
+    <main class="container">
+        <h2>Kundentermin Details</h2>
+
+        <div class="card appointment-details">
+            <h3>Klient: <span id="client-name">[Klientenname]</span></h3>
+            <p><strong>Adresse:</strong> <span id="client-address">[Straße, PLZ Ort]</span></p>
+            <p><strong>Telefon:</strong> <span id="client-phone">[Telefonnummer]</span></p>
+            <hr>
+            <p><strong>Termin-Start:</strong> <span id="appointment-start">[Datum, Uhrzeit]</span></p>
+            <p><strong>Termin-Ende:</strong> <span id="appointment-end">[Datum, Uhrzeit]</span></p>
+        </div>
+
+        <div class="card task-section">
+            <h3>Geplante Aufgaben</h3>
+            <ul id="task-list">
+                <li><label><input type="checkbox" value="Gemeinsamer Spaziergang"> Gemeinsamer Spaziergang</label></li>
+                <li><label><input type="checkbox" value="Hilfe bei der Essenszubereitung"> Hilfe bei der Essenszubereitung</label></li>
+                <li><label><input type="checkbox" value="Begleitung zum Arzttermin"> Begleitung zum Arzttermin</label></li>
+                <li><label><input type="checkbox" value="Einkäufe erledigen"> Einkäufe erledigen</label></li>
+            </ul>
+        </div>
+
+        <div class="card documentation-section">
+            <h3>Dokumentation generieren</h3>
+            <p>Haken Sie die erledigten Aufgaben ab und generieren Sie die Dokumentation für diesen Termin.</p>
+            <button id="generate-doc-btn">Dokumentation erstellen</button>
+            <textarea id="generated-documentation" rows="8" placeholder="Die generierte Dokumentation erscheint hier..."></textarea>
+            <button id="save-doc-btn" style="display:none;">Dokumentation speichern</button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 PEAR by HystDevTV</p>
+    </footer>
+
+    <script src="js/kundentermin.js"></script>
+</body>
+</html>

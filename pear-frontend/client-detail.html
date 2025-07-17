@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEAR Klientenprofil</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>PEAR</h1>
+            <p>Professionelle Einsatz-, Abrechnungs- und Ressourcenverwaltung</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="clients.html" class="active">Klienten</a></li>
+                <li><a href="appointments.html">Termine</a></li>
+                <li><a href="invoices.html">Rechnungen</a></li>
+                <li><a href="documentation.html">Dokumentation</a></li>
+                <li><a href="profile.html">Profil</a></li>
+                <li><a href="login.html">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section id="client-detail-section">
+            <div class="container">
+                <h2 id="client-name-detail">Klientenprofil: Max Mustermann</h2>
+                <div class="client-actions">
+                    <button class="btn small">Bearbeiten</button>
+                    <button class="btn small red">Status ändern</button>
+                    <a href="new-appointment.html?client_id=1" class="btn small primary">Neuen Termin anlegen</a>
+                </div>
+
+                <div class="client-data-grid">
+                    <div class="data-card">
+                        <h3>Allgemeine Daten</h3>
+                        <p><strong>Klientennummer:</strong> KNR-XYZ-2025</p>
+                        <p><strong>Adresse:</strong> Musterstr. 1, 12345 Musterstadt</p>
+                        <p><strong>Telefon:</strong> 0176 1234567</p>
+                        <p><strong>E-Mail:</strong> max.mustermann@example.com</p>
+                        <p><strong>Betreuungsbeginn:</strong> 2025-07-20</p>
+                        <p><strong>Status:</strong> Aktiv</p>
+                    </div>
+                    <div class="data-card">
+                        <h3>Besondere Hinweise</h3>
+                        <p id="special-notes">Benötigt Hilfe beim Einkauf und Spaziergängen. Leicht vergesslich. Mag keine laute Musik.</p>
+                        <p><strong>Geplante Std./Woche:</strong> 5</p>
+                        <p><strong>Vermittelndes Unternehmen:</strong> Mustervermittlung GmbH</p>
+                        <p><strong>Steuernummer:</strong> 12/345/67890</p>
+                    </div>
+                </div>
+
+                <h3>Termin-Historie</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Datum</th>
+                            <th>Uhrzeit</th>
+                            <th>Dauer (Std.)</th>
+                            <th>Tätigkeit</th>
+                            <th>Dokumentation</th>
+                            <th>Rechnung</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointment-history-body">
+                        <tr>
+                            <td>2025-07-15</td>
+                            <td>10:00 - 11:30</td>
+                            <td>1.5</td>
+                            <td>Einkauf, Spaziergang</td>
+                            <td><a href="documentation-detail.html?id=101" class="btn tiny">Ansehen</a></td>
+                            <td><a href="invoice-detail.html?id=201" class="btn tiny">Nr. 2025-001</a></td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 PEAR. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+</body>
+</html>

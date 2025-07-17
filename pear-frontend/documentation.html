@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEAR Dokumentationen</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>PEAR</h1>
+            <p>Professionelle Einsatz-, Abrechnungs- und Ressourcenverwaltung</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="clients.html">Klienten</a></li>
+                <li><a href="appointments.html">Termine</a></li>
+                <li><a href="invoices.html">Rechnungen</a></li>
+                <li><a href="documentation.html" class="active">Dokumentation</a></li>
+                <li><a href="profile.html">Profil</a></li>
+                <li><a href="login.html">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section id="documentation-list-section">
+            <div class="container">
+                <h2>Leistungsdokumentationen</h2>
+                <div class="filter-controls">
+                    <input type="text" id="search-doc" placeholder="Nach Klient oder Inhalt suchen...">
+                    <select id="filter-date">
+                        <option value="all">Alle Daten</option>
+                        <option value="today">Heute</option>
+                        <option value="last-week">Letzte Woche</option>
+                    </select>
+                    <button class="btn small">Suchen</button>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Datum</th>
+                            <th>Klient</th>
+                            <th>Begleiter</th>
+                            <th>Zusammenfassung</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="documentation-table-body">
+                        <tr>
+                            <td>2025-07-15</td>
+                            <td>Max Mustermann</td>
+                            <td>HystDevTV</td>
+                            <td>Einkauf und Spaziergang, Klient gut gelaunt.</td>
+                            <td><a href="documentation-detail.html?id=101" class="btn tiny">Ansehen</a></td>
+                        </tr>
+                        <tr>
+                            <td>2025-07-14</td>
+                            <td>Anna Schmidt</td>
+                            <td>HystDevTV</td>
+                            <td>Unterstützung beim Transfer, Medikamentenprüfung.</td>
+                            <td><a href="documentation-detail.html?id=102" class="btn tiny">Ansehen</a></td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 PEAR. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+</body>
+</html>

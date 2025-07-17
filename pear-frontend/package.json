@@ -1,0 +1,17 @@
+{
+  "name": "pear-frontend",
+  "version": "0.1.1",
+  "description": "Frontend-Dateien für die PEAR-Anwendung (Landing Page, Login, Registrierung)",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server"
+  },
+  "keywords": [
+    "pear",
+    "frontend",
+    "alltagsbegleiter",
+    "seniorenpflege"
+  ],
+  "author": "Hystdev2019",
+  "license": "ISC"
+}
