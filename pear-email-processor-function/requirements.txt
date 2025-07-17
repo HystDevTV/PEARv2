@@ -1,0 +1,5 @@
+functions-framework
+google-cloud-storage
+requests
+# Wenn Sie im Code email.parser verwenden, dann auch:
+# email_parser
