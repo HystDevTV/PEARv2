@@ -17,10 +17,30 @@
         </div>
     </header>
 
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="clients.html">Klienten</a></li>
+                <li><a href="appointments.html">Termine</a></li>
+                <li><a href="invoices.html">Rechnungen</a></li>
+                <li><a href="documentation.html">Dokumentation</a></li>
+                <li><a href="profile.html">Profil</a></li>
+                <li><a href="login.html" class="active">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <main>
+        <section class="page-banner">
+            <div class="container">
+                <h2>Login</h2>
+                <p>Melden Sie sich an, um auf Ihr PEAR-Konto zuzugreifen.</p>
+            </div>
+        </section>
         <section id="login-section">
             <div class="login-container">
-                <h2>Login</h2>
+                <h2 class="text-center text-pear-secondary text-2xl font-bold mb-6">Anmelden</h2>
                 <form action="/login" method="POST">
                     <div class="form-group">
                         <label for="email">E-Mail-Adresse:</label>
@@ -32,6 +52,7 @@
                     </div>
                     <button type="submit" class="btn primary">Anmelden</button>
                     <p class="forgot-password"><a href="#">Passwort vergessen?</a></p>
+                    <p class="login-link mt-4">Noch kein Konto? <a href="register.html">Jetzt registrieren.</a></p>
                 </form>
             </div>
         </section>

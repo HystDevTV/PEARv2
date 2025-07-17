@@ -1,346 +1,152 @@
-/* Grundlegende Farben und Variablen */
 :root {
-    --primary-color: #4CAF50; /* Grün */
-    --secondary-color: #2196F3; /* Blau */
-    --text-color: #333;
-    --background-light: #f4f4f4;
-    --background-dark: #333;
-    --white: #fff;
-    --border-color: #ddd; /* Für Formularfelder */
-    --shadow-color: rgba(0, 0, 0, 0.1); /* Für Box-Schatten */
-}
-
-/* --- Allgemeine HTML- und Body-Stile (für Sticky Footer) --- */
-html, body {
-    height: 100%; /* Stellt sicher, dass HTML und Body 100% der Viewport-Höhe einnehmen */
-    margin: 0;
-    padding: 0;
+    --pear-primary: #4CAF50;
+    --pear-secondary: #2196F3;
+    --pear-text: #1E293B;
+    --pear-background-light: #F8F9FA;
+    --pear-white: #fff;
+    --pear-accent-red: #f44336;
+    --pear-gradient-from: #2DD4BF;
+    --pear-gradient-to: #A3E635;
+    --pear-border-color: #ddd;
+    --pear-shadow-color: rgba(0, 0, 0, 0.1);
 }
 
 body {
-    font-family: 'Poppins', Arial, sans-serif; /* Poppins als Hauptschrift, Arial als Fallback */
+    font-family: 'Inter', sans-serif;
+    color: var(--pear-text);
     line-height: 1.6;
-    color: var(--text-color);
-    background: var(--white);
-    display: flex; /* Macht den Body zu einem Flex-Container */
-    flex-direction: column; /* Ordnet Header, Main, Footer untereinander an */
-    min-height: 100vh; /* Mindesthöhe des Bodys auf 100% des Viewports setzen */
-}
-
-/* --- Container für Inhaltsbreite --- */
-.container {
-    width: 80%;
-    max-width: 1200px; /* Optional: Maximale Breite für sehr große Bildschirme */
-    margin: auto;
-    overflow: hidden;
-    padding: 20px 0;
-}
-
-/* --- Buttons --- */
-.btn {
-    display: inline-block;
-    color: var(--white);
-    background: var(--primary-color);
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 5px;
-    margin: 10px;
-    transition: background-color 0.3s ease;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-.btn:hover {
-    background: #45a049; /* Dunkleres Grün beim Hover */
-}
-
-.btn.primary {
-    background: var(--white);
-    color: var(--secondary-color);
-    border: 2px solid var(--secondary-color);
-}
-
-.btn.primary:hover {
-    background: var(--background-light);
-}
-
-/* --- Header --- */
-header {
-    background: var(--primary-color);
-    color: var(--white);
-    padding: 1.5rem 0; /* Etwas mehr Polsterung oben/unten */
-    text-align: center;
+    background-color: var(--pear-white);
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 180px; /* Mindesthöhe des Headers */
+    min-height: 100vh;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 4rem; /* PEAR größer */
-    font-family: 'Montserrat', sans-serif; /* Montserrat für den Haupttitel */
-    letter-spacing: 2px; /* Etwas mehr Abstand zwischen den Buchstaben */
-    text-transform: uppercase;
-    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+h1, h2, h3, h4 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--pear-primary);
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
 }
 
-header p {
-    margin: 10px auto 0 auto; /* Oben 10px, links/rechts auto für Zentrierung */
-    font-size: 1.7rem; /* Subtitel größer */
-    font-family: 'Poppins', sans-serif; /* Poppins für den Subtitel */
-    font-weight: 400;
-    max-width: 90%; /* Breite anpassen für Lesbarkeit */
-    line-height: 1.4;
-    text-align: center; /* Explizit zentrieren */
+h1 { font-size: 2.5em; font-weight: 800; text-align: center; color: var(--pear-white); }
+h2 { font-size: 2em; font-weight: 700; color: var(--pear-primary); }
+h3 { font-size: 1.5em; font-weight: 600; color: var(--pear-secondary); }
+h4 { font-size: 1.2em; font-weight: 600; color: var(--pear-text); }
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--pear-white);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-radius: 8px;
 }
 
-/* --- Hauptinhaltsbereich (Main) --- */
-main {
-    flex-grow: 1; /* Lässt den Hauptinhaltsbereich den verbleibenden Platz einnehmen */
-}
-
-section {
-    padding: 40px 0;
+.header-section {
+    background: linear-gradient(to right, var(--pear-gradient-from), var(--pear-gradient-to));
+    color: var(--pear-white);
+    padding: 40px 20px;
     text-align: center;
-}
-
-section:nth-of-type(odd) {
-    background: var(--background-light);
-}
-
-section h2 { /* Für Login/Registrieren Überschriften */
-    color: var(--primary-color);
-    margin-bottom: 30px;
-    font-size: 2rem;
-}
-
-section h3 { /* Für Feature- und Benefits-Überschriften */
-    font-size: 2.2rem;
-    color: var(--primary-color);
-    margin-bottom: 40px;
-}
-
-/* --- Hero Section --- */
-#hero {
-    background: var(--secondary-color);
-    color: var(--white);
-    text-align: center;
-    padding: 60px 0;
-}
-
-#hero h2 { /* Spezifische h2-Größe für Hero */
-    font-size: 3rem;
+    border-radius: 8px 8px 0 0;
     margin-bottom: 20px;
 }
 
-#hero p { /* Spezifische p-Größe für Hero */
-    font-size: 1.3rem;
-    max-width: 800px;
-    margin: 0 auto 30px auto;
-}
-
-/* --- Features Grid --- */
-.feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    text-align: left;
-    margin-top: 30px;
-}
-
-.feature-item {
-    background: var(--white);
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px var(--shadow-color);
-}
-
-.feature-item h4 {
-    color: var(--secondary-color);
-    font-size: 1.5rem;
-    margin-top: 0;
-}
-
-/* --- Benefits List --- */
-#benefits ul {
-    list-style: none;
-    padding: 0;
-    max-width: 600px;
-    margin: 0 auto;
-    text-align: left;
-}
-
-#benefits ul li {
-    background: var(--white);
-    margin-bottom: 10px;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    font-size: 1.1rem;
-}
-
-/* --- Kontaktformular --- */
-#contact form {
-    max-width: 500px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-#contact form input[type="text"],
-#contact form input[type="email"],
-#contact form textarea {
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-#contact form textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-#contact form button {
-    padding: 12px 20px;
-}
-
-/* --- Login & Registrierungs-Seiten Stile --- */
-#login-section,
-#register-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* Höhe: min-height des Viewports minus die festen Höhen von Header und Footer */
-    min-height: calc(100vh - 180px - 60px);
-    background: var(--background-light);
+.section-card {
+    background-color: var(--pear-background-light);
     padding: 20px;
-}
-
-.login-container,
-.register-container {
-    background: var(--white);
-    padding: 40px;
     border-radius: 8px;
-    box-shadow: 0 5px 15px var(--shadow-color);
-    width: 100%;
-    max-width: 400px; /* Breite für die Formular-Container */
-    text-align: center;
-    margin: 0 auto; /* Zentriert den Container horizontal */
+    margin-bottom: 20px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
 }
 
-.login-container h2,
-.register-container h2 {
-    color: var(--primary-color);
-    margin-bottom: 30px;
-    font-size: 2rem;
-}
-
-/* --- Formular-Gruppen (für Login und Registrierung) --- */
-.form-group {
-    margin-bottom: 0; /* Abstand wird vom Grid/Gap übernommen */
-    text-align: left; /* Stellt sicher, dass Label/Input linksbündig sind */
-
-    /* Flexbox für Label und Input untereinander */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    width: 100%; /* Stellt sicher, dass das form-group die volle Breite im Grid einnimmt */
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--text-color);
-    width: 100%; /* Label soll volle Breite der form-group einnehmen */
-}
-
-/* Input-Felder (allgemein für Formulare) */
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="password"] {
-    width: 100%; /* Füllt die verfügbare Breite in der Spalte aus */
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 1rem;
-    box-sizing: border-box; /* Padding wird in die Breite eingerechnet */
-}
-
-/* --- Grid-Layout für Registrierungsfelder --- */
-.grid-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Zwei gleich breite Spalten */
-    gap: 20px; /* Abstand zwischen den Spalten und Zeilen */
-    margin-bottom: 20px; /* Abstand zum nächsten Abschnitt/Button */
-    text-align: left; /* Stellt sicher, dass der Text im Grid linksbündig ist */
-}
-
-/* --- Links unterhalb der Formulare --- */
-.login-link,
-.forgot-password {
-    margin-top: 20px;
-    font-size: 0.9rem;
-}
-
-.login-link a,
-.forgot-password a {
-    color: var(--secondary-color);
-    text-decoration: none;
-}
-
-.login-link a:hover,
-.forgot-password a:hover {
-    text-decoration: underline;
-}
-
-/* --- Buttons in Formularen (spezifische Breite) --- */
-.login-container .btn,
-.register-container .btn {
-    width: 100%;
-    margin-top: 20px;
+.kpi-card {
+    background-color: var(--pear-secondary);
+    color: var(--pear-white);
     padding: 15px;
-    font-size: 1.1rem;
-}
-
-/* --- Footer --- */
-footer {
-    background: var(--background-dark);
-    color: var(--white);
+    border-radius: 8px;
     text-align: center;
-    padding: 20px 0;
-    font-size: 0.9rem;
-    margin-top: auto; /* Sorgt dafür, dass der Footer an den unteren Rand gedrückt wird */
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 10px;
 }
 
-/* --- Responsive Design --- */
-@media (max-width: 768px) {
+.kpi-card.accent {
+    background-color: var(--pear-primary);
+}
+
+ul {
+    list-style: disc;
+    margin-left: 20px;
+    margin-bottom: 1em;
+}
+
+ol {
+    list-style: decimal;
+    margin-left: 20px;
+    margin-bottom: 1em;
+}
+
+code {
+    background-color: #e0e0e0;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: 'monospace';
+    font-size: 0.9em;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--pear-primary);
+    color: var(--pear-white);
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 300px;
+    max-height: 400px;
+    background-color: var(--pear-white);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+@media print {
+    body {
+        background-color: var(--pear-white);
+    }
     .container {
-        width: 90%;
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        max-width: none;
     }
-    #hero h2 {
-        font-size: 2.2rem;
+    .header-section {
+        border-radius: 0;
     }
-    #hero p {
-        font-size: 1.1rem;
-    }
-    .feature-grid {
-        grid-template-columns: 1fr;
-    }
-    .grid-section { /* Auf kleinen Bildschirmen nur eine Spalte für Formulare */
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
+}
 
 /* --- Navigation Bar (main-nav) --- */
 .main-nav {
-    background: var(--background-dark);
+    background: var(--pear-background-dark);
     padding: 0.8rem 0;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
@@ -351,11 +157,11 @@ footer {
     margin: 0;
     display: flex;
     justify-content: center;
-    gap: 25px; /* Abstand zwischen den Menüpunkten */
+    gap: 25px;
 }
 
 .main-nav ul li a {
-    color: var(--white);
+    color: var(--pear-white);
     text-decoration: none;
     font-size: 1.1rem;
     padding: 8px 15px;
@@ -368,9 +174,31 @@ footer {
     background: rgba(255,255,255,0.2);
 }
 
+/* --- Page Banner (Neuer Abschnitt für alle internen Seiten) --- */
+.page-banner {
+    background-color: var(--pear-secondary);
+    color: var(--pear-white);
+    padding: 3rem 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.page-banner h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--pear-white);
+}
+
+.page-banner p {
+    font-size: 1.2rem;
+    color: var(--pear-white);
+}
+
 /* --- Dashboard Grid --- */
 #dashboard-overview h2 {
-    color: var(--secondary-color);
+    color: var(--pear-secondary);
     margin-bottom: 30px;
 }
 
@@ -382,15 +210,15 @@ footer {
 }
 
 .dashboard-card {
-    background: var(--white);
+    background-color: var(--pear-white);
     padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px var(--shadow-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     text-align: left;
 }
 
 .dashboard-card h3 {
-    color: var(--primary-color);
+    color: var(--pear-primary);
     font-size: 1.6rem;
     margin-top: 0;
     margin-bottom: 15px;
@@ -401,6 +229,7 @@ footer {
     padding: 0;
     margin-bottom: 20px;
 }
+
 .dashboard-card ul li {
     padding: 5px 0;
     border-bottom: 1px solid #eee;
@@ -432,18 +261,18 @@ footer {
     display: flex;
     gap: 15px;
     margin-bottom: 30px;
-    flex-wrap: wrap; /* Ermöglicht Umbruch auf kleineren Bildschirmen */
-    justify-content: center; /* Zentriert die Elemente im Filterbereich */
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .filter-controls input[type="text"],
 .filter-controls select {
     padding: 10px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--pear-border-color);
     border-radius: 5px;
     font-size: 1rem;
-    flex-grow: 1; /* Lässt Suchfeld und Select wachsen */
-    max-width: 300px; /* Begrenzt die maximale Breite */
+    flex-grow: 1;
+    max-width: 300px;
 }
 
 /* --- Datentabellen --- */
@@ -452,9 +281,9 @@ footer {
     border-collapse: collapse;
     margin-top: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    background: var(--white);
-    border-radius: 8px;
-    overflow: hidden; /* Für abgerundete Ecken bei scrollbaren Tabellen */
+    background: var(--pear-white);
+    border-radius: 0.75rem;
+    overflow: hidden;
 }
 
 .data-table th,
@@ -465,8 +294,8 @@ footer {
 }
 
 .data-table th {
-    background: var(--primary-color);
-    color: var(--white);
+    background-color: var(--pear-primary);
+    color: var(--pear-white);
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.9rem;
@@ -480,7 +309,7 @@ footer {
     border-bottom: none;
 }
 
-/* --- Client Detail Grid --- */
+/* --- Client/Appointment Detail Grids --- */
 .client-data-grid,
 .appointment-data-grid {
     display: grid;
@@ -491,14 +320,14 @@ footer {
 }
 
 .data-card {
-    background: var(--white);
+    background-color: var(--pear-white);
     padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px var(--shadow-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .data-card h3 {
-    color: var(--primary-color);
+    color: var(--pear-primary);
     font-size: 1.6rem;
     margin-top: 0;
     margin-bottom: 15px;
@@ -522,13 +351,13 @@ footer {
 
 .client-data-grid p strong,
 .appointment-data-grid p strong {
-    min-width: 120px; /* Für bessere Ausrichtung der Doppelpunkte */
+    min-width: 120px;
     display: inline-block;
 }
 
 .red {
-    background: #f44336; /* Rot für Warnaktionen */
-    border-color: #f44336;
+    background: var(--pear-accent-red);
+    border-color: var(--pear-accent-red);
 }
 
 .red:hover {
@@ -548,7 +377,7 @@ footer {
 .calendar-controls span {
     font-size: 1.8rem;
     font-weight: bold;
-    color: var(--secondary-color);
+    color: var(--pear-secondary);
 }
 
 #calendar-view ul {
@@ -559,10 +388,10 @@ footer {
 }
 
 #calendar-view ul li {
-    background: var(--white);
+    background: var(--pear-white);
     padding: 15px;
     margin-bottom: 10px;
-    border-radius: 8px;
+    border-radius: 0.75rem;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     display: flex;
     justify-content: space-between;
@@ -576,15 +405,21 @@ footer {
 
 /* --- Responsive Anpassungen für neue Seiten --- */
 @media (max-width: 768px) {
+    .page-banner h2 {
+        font-size: 2rem;
+    }
+    .page-banner p {
+        font-size: 1rem;
+    }
     .dashboard-grid,
     .client-data-grid,
     .appointment-data-grid {
-        grid-template-columns: 1fr; /* Eine Spalte auf kleineren Bildschirmen */
+        grid-template-columns: 1fr;
     }
 
     .filter-controls input[type="text"],
     .filter-controls select {
-        max-width: 100%; /* Volle Breite auf kleinen Bildschirmen */
+        max-width: 100%;
     }
 
     .data-table,
@@ -592,17 +427,17 @@ footer {
     .data-table tr,
     .data-table th,
     .data-table td {
-        display: block; /* Macht die Tabelle stapelbar */
+        display: block;
     }
 
     .data-table thead {
-        display: none; /* Kopfzeile ausblenden */
+        display: none;
     }
 
     .data-table tr {
         margin-bottom: 15px;
         border: 1px solid #ddd;
-        border-radius: 8px;
+        border-radius: 0.75rem;
         padding: 10px;
     }
 
@@ -613,7 +448,7 @@ footer {
     }
 
     .data-table td::before {
-        content: attr(data-label); /* Zeigt die Spaltenüberschrift an */
+        content: attr(data-label);
         position: absolute;
         left: 10px;
         width: 45%;
