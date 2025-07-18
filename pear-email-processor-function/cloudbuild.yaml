@@ -5,3 +5,6 @@ steps:
   args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest']
 images:
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest'
+# NEUE ZEILE HINZUFÜGEN: Logging-Konfiguration
+options:
+  logging: CLOUD_LOGGING_ONLY
