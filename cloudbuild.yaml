@@ -1,11 +1,11 @@
-steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest', '.']
-  dir: 'pear-email-processor-function' # Der Ordner, in dem Dockerfile, main.py etc. liegen
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest']
-  dir: 'pear-email-processor-function' # Der Ordner, in dem sich das Image befindet
-images:
-- 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest'
-options:
-  logging: CLOUD_LOGGING_ONLY
+    steps:
+    - name: 'gcr.io/cloud-builders/docker'
+      args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest', '.']
+      # Der '.' am Ende ist jetzt das gesamte Repository, da Dockerfile etc. dort liegen.
+    - name: 'gcr.io/cloud-builders/docker'
+      args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest']
+    images:
+    - 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest'
+    options:
+      logging: CLOUD_LOGGING_ONLY
+    
