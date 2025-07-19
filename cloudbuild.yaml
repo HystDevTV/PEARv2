@@ -1,14 +1,14 @@
     steps:
     - name: 'gcr.io/cloud-builders/docker'
       args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest', '.']
-      # Der '.' am Ende ist jetzt das gesamte Repository, da Dockerfile etc. dort liegen.
     - name: 'gcr.io/cloud-builders/docker'
       args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest']
-    - name: 'gcr.io/cloud-builders/gcloud' # NEU: Schritt für Cloud Run Deployment
+    - name: 'gcr.io/cloud-builders/gcloud'
+      id: 'Deploy Cloud Run Service'
       args:
         - 'run'
         - 'deploy'
-        - 'process-pear-emails' # Name des Cloud Run Dienstes
+        - 'process-pear-emails'
         - '--image'
         - 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest'
         - '--platform'
@@ -23,11 +23,47 @@
         - '0'
         - '--max-instances'
         - '1'
-      # Die Umgebungsvariablen für die Cloud Run-Funktion müssen hier übergeben werden
-      # Das Cloud Build Service-Account muss die Berechtigung haben, Cloud Run-Dienste zu erstellen und zu verwalten
-      # sowie Images aus Artifact Registry zu lesen.
+    - name: 'gcr.io/cloud-builders/gcloud' # NEU: Schritt für VM-Deployment
+      id: 'Deploy Frontend & Backend on VM'
+      args:
+        - 'compute'
+        - 'ssh'
+        - 'hystdev2019@projekt-pear-vm' # Benutzername@VM-Name
+        - '--zone=us-central1-a' # Zone Ihrer VM
+        - '--command="cd /home/hystdev2019/PEARv2 && ./deploy_all.sh"' # Befehl auf der VM ausführen
+      # Dieses Cloud Build Service-Account benötigt SSH-Berechtigungen zur VM
     images:
     - 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest'
     options:
       logging: CLOUD_LOGGING_ONLY
-    
+    ```
+    * **Wichtig:** Überprüfen Sie die IP-Adresse (`34.46.6.30`) und den VM-Namen (`projekt-pear-vm`) sowie den Benutzernamen (`hystdev2019`) und die Zone (`us-central1-a`).
+
+2.  **`cloudbuild.yaml` zu GitHub pushen (aus VS Code):**
+    * Öffnen Sie Ihr `PEARv2`-Projekt in **VS Code**.
+    * Gehen Sie zur **Source Control**-Ansicht.
+    * **Stagen Sie die `cloudbuild.yaml`**.
+    * Geben Sie eine **Commit-Nachricht** ein (z.B. "Cloud Build: Automatisches Deployment für Frontend/Backend hinzugefügt").
+    * Klicken Sie auf den **"Commit & Push"**-Button.
+
+3.  **Cloud Build Service-Account für SSH zur VM berechtigen:**
+    Das Cloud Build Service-Account (`PROJECT_NUMBER@cloudbuild.gserviceaccount.com`) benötigt die Berechtigung, sich per SSH mit Ihrer VM zu verbinden.
+
+    * **Cloud Build Service-Account-ID abrufen:**
+        * Gehen Sie zur **Google Cloud Console** > **IAM & Verwaltung** > **IAM**.
+        * Suchen Sie nach dem Dienstkonto, das auf `@cloudbuild.gserviceaccount.com` endet (z.B. `1090307551330@cloudbuild.gserviceaccount.com`). **Kopieren Sie diese E-Mail-Adresse.**
+    * **Rolle zuweisen:**
+        * Suchen Sie dieses Dienstkonto in der IAM-Liste.
+        * Klicken Sie auf das **Stift-Symbol** (Bearbeiten) daneben.
+        * Klicken Sie auf **"WEITERE ROLLE HINZUFÜGEN"**.
+        * Fügen Sie die Rolle **`Compute-Instanz-Administrator (v1)`** (Compute Instance Admin (v1)) hinzu.
+        * Klicken Sie auf **"SPEICHERN"**.
+
+4.  **Cloud Build manuell auslösen:**
+    * Auf der Trigger-Seite, suchen Sie Ihren `build-email-processor`-Trigger.
+    * Klicken Sie auf die drei Punkte (`...`) daneben und wählen Sie **"Ausführen"** (Run).
+    * Bestätigen Sie das Ausführen.
+
+---
+
+Lassen Sie mich wissen, ob der Cloud Build jetzt erfolgreich ist und das Deployment auf Ihrer VM automatisch erfol
