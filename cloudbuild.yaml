@@ -4,6 +4,28 @@
       # Der '.' am Ende ist jetzt das gesamte Repository, da Dockerfile etc. dort liegen.
     - name: 'gcr.io/cloud-builders/docker'
       args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest']
+    - name: 'gcr.io/cloud-builders/gcloud' # NEU: Schritt für Cloud Run Deployment
+      args:
+        - 'run'
+        - 'deploy'
+        - 'process-pear-emails' # Name des Cloud Run Dienstes
+        - '--image'
+        - 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest'
+        - '--platform'
+        - 'managed'
+        - '--region'
+        - 'us-central1'
+        - '--allow-unauthenticated'
+        - '--set-env-vars'
+        - 'FASTAPI_API_URL=http://34.46.6.30:8000' # Ihre VM-IP
+        - '--no-cpu-throttling'
+        - '--min-instances'
+        - '0'
+        - '--max-instances'
+        - '1'
+      # Die Umgebungsvariablen für die Cloud Run-Funktion müssen hier übergeben werden
+      # Das Cloud Build Service-Account muss die Berechtigung haben, Cloud Run-Dienste zu erstellen und zu verwalten
+      # sowie Images aus Artifact Registry zu lesen.
     images:
     - 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest'
     options:
