@@ -16,8 +16,13 @@ def build_team() -> List[Agent]:
             role="Koordination",
             tasks=[
                 "Meilensteine planen & Prioritäten setzen",
+                "Sprint-basierte Projektphasen definieren (5 Sprints)",
+                "Prioritätensystem (P1-P3) für alle Aufgaben implementieren",
+                "Aufgabenlisten für alle Agenten erstellen und verwalten",
                 "Kommunikation im Team sicherstellen",
                 "Projektfortschritt überwachen & berichten",
+                "Risikomanagement und Mitigation-Strategien entwickeln",
+                "KPIs definieren und Fortschritt messen",
             ],
         ),
         Agent(
