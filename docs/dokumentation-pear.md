@@ -180,6 +180,84 @@ Aktivieren Sie Audit-Logs für folgende Services:
 2. **Build-Dauer:** `cloudbuild.googleapis.com/build/duration`
 3. **IAM-Richtlinien-Verletzungen:** Cloud Security Command Center
 
+## Zusätzliche Sicherheitsüberlegungen
+
+### 1. Cloud Run Service Sicherheit
+
+**Problem:** Die aktuelle Konfiguration verwendet `--allow-unauthenticated`, was öffentlichen Zugriff ermöglicht.
+
+**Empfehlung:**
+```bash
+# Stattdessen authentifizierten Zugriff verwenden
+gcloud run deploy process-pear-emails \
+    --image us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest \
+    --no-allow-unauthenticated \
+    --region us-central1
+```
+
+**Zusätzliche IAM-Berechtigungen für authentifizierten Zugriff:**
+```bash
+# Cloud Run Invoker für spezifische Service-Konten
+gcloud run services add-iam-policy-binding process-pear-emails \
+    --region=us-central1 \
+    --member="serviceAccount:email-client@$PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/run.invoker"
+```
+
+### 2. Umgebungsvariablen Sicherheit
+
+**Problem:** Hardcodierte IP-Adresse in der Build-Konfiguration:
+```yaml
+FASTAPI_API_URL=http://34.46.6.30:8000
+```
+
+**Empfehlungen:**
+1. **DNS-Namen verwenden:** Ersetzen Sie IP-Adressen durch DNS-Namen
+2. **HTTPS verwenden:** Nutzen Sie verschlüsselte Verbindungen
+3. **Secret Manager:** Speichern Sie sensible Umgebungsvariablen in Google Secret Manager
+
+**Verbesserte Konfiguration:**
+```yaml
+- '--set-env-vars'
+- 'FASTAPI_API_URL=https://pear-backend.example.com'
+```
+
+**Secret Manager Integration:**
+```bash
+# Secret erstellen
+gcloud secrets create fastapi-url --data-file=fastapi_url.txt
+
+# Cloud Run Service Account Berechtigung für Secret Manager
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:process-pear-emails@$PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/secretmanager.secretAccessor"
+
+# In cloudbuild.yaml:
+- '--set-env-vars'
+- 'FASTAPI_API_URL=/run/secrets/fastapi-url'
+```
+
+### 3. Netzwerk-Sicherheit
+
+**Empfehlungen:**
+1. **VPC Connector:** Verwenden Sie VPC-Konnektoren für private Netzwerke
+2. **Firewall-Regeln:** Beschränken Sie den Zugriff auf notwendige Ports
+3. **Cloud Armor:** Implementieren Sie WAF-Schutz für öffentliche Endpunkte
+
+**VPC-Konfiguration:**
+```bash
+# VPC Connector erstellen
+gcloud compute networks vpc-access connectors create pear-connector \
+    --region=us-central1 \
+    --subnet=pear-subnet \
+    --subnet-project=$PROJECT_ID
+
+# In Cloud Run verwenden
+gcloud run deploy process-pear-emails \
+    --vpc-connector=pear-connector \
+    --vpc-egress=private-ranges-only
+```
+
 ## Zusammenfassung
 
 Für eine sichere und funktionsfähige Cloud Build-Pipeline benötigen Sie:
@@ -188,15 +266,25 @@ Für eine sichere und funktionsfähige Cloud Build-Pipeline benötigen Sie:
    - `roles/artifactregistry.writer`
    - `roles/run.developer`
    - `roles/logging.logWriter`
+   - Optional: `roles/secretmanager.secretAccessor` für Secret Manager
 
 2. **Empfohlene Sicherheitsmaßnahmen:**
    - Dediziertes Service-Konto verwenden
    - Ressourcen-spezifische Berechtigungen
-   - Regelmäßige Audit-Log-Überprüfung
+   - Authentifizierte Cloud Run Services
+   - HTTPS und DNS-Namen für API-Endpunkte
+   - Secret Manager für sensible Daten
+   - VPC-Konnektoren für Netzwerk-Isolation
 
 3. **Monitoring:**
    - Build-Metriken überwachen
    - Audit-Logs aktivieren
    - Sicherheitswarnungen einrichten
+   - Cloud Security Command Center nutzen
 
-Diese Konfiguration stellt sicher, dass Ihr Cloud Build-Prozess sicher und mit minimalen Berechtigungen funktioniert.
+4. **Regelmäßige Überprüfungen:**
+   - IAM-Berechtigungen quartalsweise überprüfen
+   - Sicherheits-Scans durchführen
+   - Dependency-Updates und Vulnerability-Checks
+
+Diese Konfiguration stellt sicher, dass Ihr Cloud Build-Prozess sicher und mit minimalen Berechtigungen funktioniert, während gleichzeitig Best Practices für Cloud-Sicherheit befolgt werden.
