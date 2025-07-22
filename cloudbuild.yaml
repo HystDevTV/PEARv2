@@ -1,4 +1,5 @@
 steps:
+logsBucket: gs://build-team-storage
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest', '.']
   - name: 'gcr.io/cloud-builders/docker'
@@ -25,6 +26,3 @@ steps:
       - '1'
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest'
-options:
-  logging: CLOUD_LOGGING_ONLY
-logsBucket: gs://build-team-storage
