@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PEAR - Professionelle Einsatz-, Abrechnungs- und Ressourcenverwaltung</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
@@ -12,7 +12,7 @@
             --text-weiss: #FFFFFF;
             --akzent-braun: #B99470;
             --akzent-frischgruen: #66CDAA;
-            --border-color-default: rgba(102, 205, 170, 0.4);
+            --border-color-default: #f3f4f6;;
             --pear-white: #f8fafc;
             --pear-green: #1c3329;
             --pear-mint: #66CDAA;
@@ -20,13 +20,14 @@
         }
 
         .text-akzentbraun {
-            color: rgba(185, 148, 112, 0.3) !important;
+            color: rgba(185, 148, 112, 0.7) !important;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.07);
         }
 
         body {
             background-color: var(--bg-techgruen);
             color: var(--text-weiss);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             padding-top: 90px; /* Platz für den fixierten Header */
         }
 
@@ -47,18 +48,18 @@
         .interactive-card {
             background-color: rgba(255, 255, 255, 0.05);
             color: var(--pear-white);
-            border-color: var(--pear-mint);
-            border: 1px solid var(--border-color-default);
+            border: 0.5px solid var(--akzent-braun); /* Braunton */
             border-radius: 1rem;
             padding: 1.5rem;
             transition: border-color 0.3s ease, border-width 0.3s ease, box-shadow 0.3s ease;
             position: relative;
+            /* box-shadow entfernt */
         }
         .interactive-card:hover {
             background: var(--pear-green);
             color: var(--pear-white);
-            border-color: rgba(185, 148, 112, 0.3);
-            box-shadow: 0 0 15px rgba(185, 148, 112, 0.3);
+            border-color: #f3f4f6;
+            box-shadow: 0 0 15px #f3f4f6;
         }
         .interactive-card h3 {
             transition: color 0.3s ease;
@@ -130,25 +131,25 @@
             color: var(--akzent-braun) !important;
         }
         .timeline-process-container {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 1rem;
-            padding: 2.5rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.07); /* etwas mehr Sichtbarkeit */
+            border-radius: 1.25rem; /* leicht größere Rundung */
+            border: 1px solid var(--akzent-braun); /* etwas kräftigerer Rand */
+            padding: 3rem 2rem; /* mehr Innenabstand */
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: center;
-            gap: 2rem;
-            box-shadow: 0 2px 8px rgba(30,58,52,0.08);
+            gap: 2.5rem; /* mehr Abstand zwischen Steps */
             margin: 0 auto;
-            max-width: 1100px;
-            flex-wrap: nowrap;
-            border: 1px solid var(--border-color-default);
-            transition: background 0.2s, color 0.2s;
+            max-width: 1200px; /* etwas breiter */
+            flex-wrap: wrap; /* besser für kleinere Bildschirme */
+            box-shadow: 0 4px 24px rgba(28,51,41,0.08); /* dezenter Schatten */
+            transition: background 0.2s, color 0.2s, box-shadow 0.3s;
         }
         .timeline-process-container:hover {
             background: var(--pear-green);
-            border-color: rgba(185, 148, 112, 0.3);
-            box-shadow: 0 0 15px rgba(185, 148, 112, 0.3);
+            border-color: #f3f4f6; /* hellgrau */
+            box-shadow: 0 0 15px #f3f4f6;
         }
         .timeline-step {
             display: flex;
@@ -208,7 +209,7 @@
 
         <!-- Hero Section -->
         <section class="my-16 text-center">
-            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-akzentbraun drop-shadow">Ihre Zeit gehört den Menschen, nicht dem Papierkram.</h1>
+            <h1 class="text-6xl md:text-7xl font-extrabold mb-4 text-akzentbraun drop-shadow">Ihre Zeit gehört den Menschen, nicht dem Papierkram.</h1>
             <p class="text-lg md:text-xl opacity-80 mb-8">PEAR ist die intuitive Software-Lösung, die Alltagsbegleitern hilft, Verwaltung zu automatisieren und mehr Zeit für das Wesentliche zu haben.</p>
             <a href="#" class="inline-block px-8 py-3 rounded btn text-lg" style="background:rgba(185,148,112,0.3);color:var(--pear-green);font-weight:700;">Jetzt durchstarten</a>
         </section>
