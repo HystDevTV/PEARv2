@@ -3,6 +3,9 @@ import requests
 import os
 from modules.team import build_team
 
+team = build_team()
+for agent in team:
+    print(f"{agent.name} ({agent.role})")
 # GitHub-Zugangsdaten (am besten als Umgebungsvariable speichern)
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 REPO = "HystDevTV/PEARv2"

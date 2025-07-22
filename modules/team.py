@@ -51,7 +51,7 @@ def build_team() -> List[Agent]:
             role="Deployment & Infrastruktur",
             tasks=[
                 "Schritt-für-Schritt-Anleitung für Docker-Image erstellen",
-                "Cloud Build Rechte (IAM) detailliert prüfen",
+                "loud Build Rechte (IAM) detailliert prüfen (siehe /docs/dokumentation-pear.md)",
                 "Dienstkonto-Berechtigungen und Authentifizierung testen",
                 "Bei Bedarf dediziertes Dienstkonto mit Minimalrechten anlegen",
                 "Cloud Run Deployment implementieren und dokumentieren",
