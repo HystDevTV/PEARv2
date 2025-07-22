@@ -49,6 +49,8 @@ Der Projektmanager (Projektleiter) soll dabei automatisch für alle Aufgaben der
    - Python-Umgebung
    - Gültiges GitHub-Token als Umgebungsvariable `GITHUB_TOKEN`
    - Korrekte Repo-Angabe in `run_agents.py`
+   - **Für Cloud Build/Cloud Run:**  
+     - Docker-Image wird nach `gcr.io/pear-dev-teamv1/dev-team-pear-agenten` gebaut und gepusht
 
 2. **Starten:**
    ```sh
@@ -58,12 +60,11 @@ Der Projektmanager (Projektleiter) soll dabei automatisch für alle Aufgaben der
    ```sh
    python modules/run_agents.py
    ```
-
-3. **Ablauf:**
-   - Im Terminal wird angezeigt, wie jeder Agent seine Aufgaben abarbeitet.
-   - Der Projektmanager legt automatisch Issues für alle Aufgaben der Teammitglieder im GitHub-Repo an.
-   - Die anderen Agenten geben ihre Aufgaben im Terminal aus.
-
+   oder als Docker-Container:
+   ```sh
+   docker run --env GITHUB_TOKEN=dein_token gcr.io/pear-dev-teamv1/dev-team-pear-agenten
+   ```
+   
 ---
 
 ## 5. Erweiterungsmöglichkeiten
