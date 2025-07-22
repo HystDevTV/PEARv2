@@ -19,6 +19,7 @@ def build_team() -> List[Agent]:
                 "Meilensteine planen & Prioritäten setzen",
                 "Kommunikation im Team sicherstellen",
                 "Projektfortschritt überwachen & berichten",
+                "Tickets für alle Aufgaben im GitHub-Repo anlegen",
             ],
             backstory="Hat jahrelange Erfahrung in agilen Projekten und koordiniert alle Teams.",
         ),
