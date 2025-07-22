@@ -1,11 +1,11 @@
-from team import build_team
-from crewai import Agent, Crew, Task
+from crewai import Agent as CrewAgent, Crew, Task
 import requests
 import os
+from modules.team import build_team
 
 # GitHub-Zugangsdaten (am besten als Umgebungsvariable speichern)
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")  # oder direkt als String
-REPO = "HystDevTV/PEARv2"      # z.B. "hystd/PEARv2"
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+REPO = "HystDevTV/PEARv2"
 
 def lade_github_issues():
     url = f"https://api.github.com/repos/{REPO}/issues"
@@ -14,13 +14,14 @@ def lade_github_issues():
     response.raise_for_status()
     return response.json()
 
-# Team laden und Agenten erzeugen
+# Team laden und CrewAI-Agenten erzeugen (inkl. Backstory)
 projekt_team = build_team()
 crewai_agents = [
-    Agent(
+    CrewAgent(
         name=ag.name,
         role=ag.role,
         goal=" und ".join(ag.tasks),
+        backstory=ag.backstory
     )
     for ag in projekt_team
 ]
@@ -39,12 +40,15 @@ for i, issue in enumerate(issues):
         )
     )
 
-# Crew erzeugen und laufen lassen
+# Crew erzeugen
 crew = Crew(
     agents=crewai_agents,
     tasks=tasks
 )
+
+# Ausgabe der Aufgabenverteilung
 for task in tasks:
     print(f"Task für Agent {task.agent.name}: {task.description}")
+
 if __name__ == "__main__":
     crew.kickoff()
