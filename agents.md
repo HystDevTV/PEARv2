@@ -9,6 +9,7 @@ In diesem Projekt gibt es verschiedene Agenten, die jeweils eigene Aufgabenberei
 #### 1. Projektmanager
 - **Rolle:** Koordination, Meilensteine planen, Kommunikation
 - **Aufgaben:** Fortschritt überwachen, Teammeetings organisieren
+- **Dokumentation:** Siehe [PEAR Projektdokumentation](./docs/dokumentation-pear.md) für detaillierte Koordinationsrichtlinien
 
 #### 2. Backend-Entwickler
 - **Rolle:** Entwicklung und Pflege der Backend-API
