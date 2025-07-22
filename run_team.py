@@ -44,6 +44,7 @@ crew = Crew(
     agents=crewai_agents,
     tasks=tasks
 )
-
+for task in tasks:
+    print(f"Task für Agent {task.agent.name}: {task.description}")
 if __name__ == "__main__":
     crew.kickoff()

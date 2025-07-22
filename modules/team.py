@@ -6,6 +6,8 @@ class Agent:
     name: str
     role: str
     tasks: List[str] = field(default_factory=list)
+    backstory: str = ""
+
 
 def build_team() -> List[Agent]:
     """Erstellt das Team mit allen Rollen und Aufgaben."""
@@ -18,6 +20,7 @@ def build_team() -> List[Agent]:
                 "Kommunikation im Team sicherstellen",
                 "Projektfortschritt überwachen & berichten",
             ],
+            backstory="Hat jahrelange Erfahrung in agilen Projekten und koordiniert alle Teams.",
         ),
         Agent(
             name="Backend-Entwickler",
@@ -27,6 +30,7 @@ def build_team() -> List[Agent]:
                 "Datenbank anbinden und pflegen",
                 "Cloud Functions integrieren",
             ],
+            backstory="Entwickelt seit Jahren Python-basierte APIs und kennt sich bestens mit Datenbanken aus.",
         ),
         Agent(
             name="Frontend-Entwickler",
@@ -36,6 +40,7 @@ def build_team() -> List[Agent]:
                 "API-Integration ins Frontend",
                 "Benutzerführung und Usability optimieren",
             ],
+            backstory="Bringt ein Auge für Design und Benutzerfreundlichkeit mit und erstellt moderne Weboberflächen.",
         ),
         Agent(
             name="DevOps-Engineer",
@@ -45,6 +50,7 @@ def build_team() -> List[Agent]:
                 "Cloud Run Deployment automatisieren",
                 "Monitoring & Logging implementieren",
             ],
+            backstory="Automatisierungsexperte, sorgt für reibungslose Deployments in der Cloud.",
         ),
         Agent(
             name="Data/AI Engineer",
@@ -54,6 +60,7 @@ def build_team() -> List[Agent]:
                 "AI-Services (z.B. Google Gemini) anbinden",
                 "Qualität der extrahierten Daten prüfen",
             ],
+            backstory="Hat mehrere Projekte mit Machine Learning umgesetzt und integriert KI-Services.",
         ),
         Agent(
             name="QA/Testing-Spezialist",
@@ -63,6 +70,7 @@ def build_team() -> List[Agent]:
                 "Tests in CI/CD-Pipeline integrieren",
                 "Bugs erfassen & nachverfolgen",
             ],
+            backstory="Spezialist für Testautomatisierung und kontinuierliche Integration.",
         ),
         Agent(
             name="Dokumentations-Agent",
@@ -72,15 +80,20 @@ def build_team() -> List[Agent]:
                 "User Guide erweitern",
                 "Beispiele & Tutorials sammeln",
             ],
+            backstory="Schreibt präzise und verständliche Dokumentation für Entwickler und Nutzer.",
         ),
     ]
+
 
 def print_team(team: List[Agent]) -> None:
     for agent in team:
         print(f"{agent.name} ({agent.role})")
+        if agent.backstory:
+            print(f"  Hintergrund: {agent.backstory}")
         for task in agent.tasks:
             print(f"  - {task}")
         print()
+
 
 if __name__ == "__main__":
     team = build_team()
