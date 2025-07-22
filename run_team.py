@@ -48,7 +48,7 @@ crew = Crew(
 
 # Ausgabe der Aufgabenverteilung
 for task in tasks:
-    print(f"Task für Agent {task.agent.name}: {task.description}")
+    print(f"Task für Agent {task.agent}: {task.description}")
 
 if __name__ == "__main__":
     crew.kickoff()
