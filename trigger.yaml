@@ -6,7 +6,7 @@ spec:
   description: Trigger für PEAR CI/CD
   github:
     owner: HystDevTV
-    name: HystDevTV-PEARv2
+    name: PEARv2
     push:
       branch: '^main$'
   filename: cloudbuild.yaml

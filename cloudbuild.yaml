@@ -1,28 +1,27 @@
 steps:
-logsBucket: gs://build-team-storage
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: gcr.io/cloud-builders/docker
     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest', '.']
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: gcr.io/cloud-builders/docker
     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest']
-  - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'Deploy Cloud Run Service'
+  - name: gcr.io/cloud-builders/gcloud
+    id: Deploy Cloud Run Service
     args:
-      - 'run'
-      - 'deploy'
-      - 'process-pear-emails'
-      - '--image'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest'
-      - '--platform'
-      - 'managed'
-      - '--region'
-      - 'us-central1'
-      - '--allow-unauthenticated'
-      - '--set-env-vars'
-      - 'FASTAPI_API_URL=http://34.46.6.30:8000'
-      - '--no-cpu-throttling'
-      - '--min-instances'
+      - run
+      - deploy
+      - process-pear-emails
+      - --image
+      - us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest
+      - --platform
+      - managed
+      - --region
+      - us-central1
+      - --allow-unauthenticated
+      - --set-env-vars
+      - FASTAPI_API_URL=http://34.46.6.30:8000
+      - --no-cpu-throttling
+      - --min-instances
       - '0'
-      - '--max-instances'
+      - --max-instances
       - '1'
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest'
+  - us-central1-docker.pkg.dev/$PROJECT_ID/pear-images/email-processor:latest
