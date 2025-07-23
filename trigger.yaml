@@ -1,0 +1,17 @@
+apiVersion: cloudbuild.googleapis.com/v1
+kind: BuildTrigger
+metadata:
+  name: dev-team-trigger
+spec:
+  description: Trigger für PEAR CI/CD
+  github:
+    owner: HystDevTV
+    name: HystDevTV-PEARv2
+    push:
+      branch: '^main$'
+  filename: cloudbuild.yaml
+  serviceAccount: build-trigger@pear-dev-teamv1.iam.gserviceaccount.com
+  logConfig:
+    cloudLoggingOption:
+      loggingMode: LEGACY
+  logsBucket: gs://build-team-storage
