@@ -1,3 +1,4 @@
+apiVersion: cloudbuild.googleapis.com/v1
 kind: BuildTrigger
 metadata:
   name: dev-team-trigger
