@@ -1,4 +1,18 @@
-apiVersion: v1
-  logConfig:
+name: dev-team-trigger
+description: "Build-Trigger für das Dev-Team PEAR Projekt"
+github:
+  owner: HystDevTV
+  name: PEARv2
+  push:
+    branch: main
+build:
+  steps:
+    - name: 'gcr.io/cloud-builders/docker'
+      args: ['build', '-t', 'gcr.io/pear-dev-teamv1/dev-team-pear-agenten:$COMMIT_SHA', '-t', 'gcr.io/pear-dev-teamv1/dev-team-pear-agenten:latest', './pear-backend']
+  images:
+    - 'gcr.io/pear-dev-teamv1/dev-team-pear-agenten:$COMMIT_SHA'
+    - 'gcr.io/pear-dev-teamv1/dev-team-pear-agenten:latest'
+serviceAccount: 'projects/pear-dev-teamv1/serviceAccounts/build-trigger@pear-dev-teamv1.iam.gserviceaccount.com'
+logConfig:
   cloudLoggingOption:
-    
+    loggingMode: LEGACY
