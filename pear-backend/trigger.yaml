@@ -13,6 +13,3 @@ build:
     - 'gcr.io/pear-dev-teamv1/dev-team-pear-agenten:$COMMIT_SHA'
     - 'gcr.io/pear-dev-teamv1/dev-team-pear-agenten:latest'
 serviceAccount: 'projects/pear-dev-teamv1/serviceAccounts/build-trigger@pear-dev-teamv1.iam.gserviceaccount.com'
-logConfig:
-  cloudLoggingOption:
-    loggingMode: LEGACY
