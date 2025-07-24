@@ -1,147 +1,82 @@
-Projektdokumentation PEAR (Version 0.1.1)
-Stand: 18. Juli 2025, 08:00 Uhr CEST
-Projektname: PEAR – Professionelle Einsatz-, Abrechnungs- und Ressourcenverwaltung Autor: HystDevTV Gesamt-App Version (aktueller Stand): 0.1.1 Frontend Version: 0.1.1 (Versioniert über package.json) Backend Version: 0.0.0
+PEAR – Professionelle Einsatz-, Abrechnungs- und Ressourcenverwaltung Aktueller Projektdokumentation Stand: 24. Juli 2025 Autor: HystDevTV (Jan Philip Egerton Steinert) Gesamt-App Version (aktueller Stand): 0.1.1 Frontend Version: 0.1.1 (Versioniert über package.json) Backend Version: 0.0.0 (noch in Entwicklung/Initialisierung)
 
-1. Einleitung
-    • Zielsetzung: Entwicklung einer umfassenden Webanwendung zur Digitalisierung und Automatisierung der administrativen Aufgaben von Alltagsbegleitern in der Seniorenpflege. Das Kernziel ist es, Alltagsbegleitern und Verwaltungspersonal die tägliche Routine zu erleichtern, Zeit für die direkte Klientenbetreuung zu schaffen und die Datenverwaltung zu zentralisieren und abzusichern.
-    • Motivation: Reduktion von administrativem Stress, Vermeidung von Fehlern, Zeitersparnis, Verbesserung der Kommunikation, Erhöhung der Datenqualität und -sicherheit, Möglichkeit zur Skalierung und Professionalisierung der Pflegedienstleistung.
-
+1. Einleitung und Projektüberblick
+PEAR ist eine umfassende Webanwendung, die darauf abzielt, die administrativen Aufgaben von Alltagsbegleitern in der Seniorenpflege zu digitalisieren und zu automatisieren. Das Kernziel ist es, die tägliche Routine zu erleichtern, Zeit für die direkte Klientenbetreuung zu schaffen und die Datenverwaltung zu zentralisieren und abzusichern. Die Motivation hinter PEAR umfasst die Reduktion von administrativem Stress, Fehlervermeidung, Zeitersparnis, Verbesserung der Kommunikation sowie die Erhöhung der Datenqualität und -sicherheit. Die Anwendung ist darauf ausgelegt, Funktionen wie Terminlegung, Kundenverwaltung, Routenplanung, Stundenerfassung, Dokumentation und Buchhaltung inklusive Rechnungserstellung, Versand und Ablage zu automatisieren. Dabei hat die DSGVO-Konformität oberste Priorität.
 2. Zielgruppe & Stakeholder
-    • Primärnutzer: Alltagsbegleiter in der Seniorenpflege.
-    • Sekundärnutzer: Verwaltungspersonal (Büroleitung, Buchhaltung).
-    • Indirekte Stakeholder: Klienten und deren Angehörige (profitieren von besserer Organisation).
-    • Lieferanten/Partner: Vermittlungsstellen (E-Mail-Schnittstelle).
-
+    • Primärnutzer: Alltagsbegleiter in der Seniorenpflege. 
+    • Sekundärnutzer: Verwaltungspersonal (Büroleitung, Buchhaltung). 
+    • Indirekte Stakeholder: Klienten und deren Angehörige, die von der besseren Organisation profitieren. 
+    • Lieferanten/Partner: Vermittlungsstellen, die über eine E-Mail-Schnittstelle integriert werden sollen. 
 3. Infrastruktur-Setup (Google Cloud Platform)
-Ziel: Bereitstellung einer kosteneffizienten, stabilen und erreichbaren Hosting-Umgebung für PEAR.
-3.1 Google Cloud Projekt
-    • Name: PEARv2 (Umbenennung von "Projekt-Pear" für klare Projektidentifikation).
-    • Zweck: Container für alle Cloud-Ressourcen des Projekts.
-3.2 Virtuelle Maschine (VM)
-    • Dienst: Google Compute Engine.
-    • Instanz-ID: projekt-pear-vm (Neu erstellt nach Problemen der Vorgänger-VMs).
-    • Maschinentyp: e2-medium (2 vCPUs, 4 GB RAM) - Kostenpflichtig (~0,022 /Stundein‘us−central1‘),Kostenwerdenvom300 Startguthaben gedeckt. Entscheidung für höhere Leistung in der Entwicklungsphase (max. 20 $ / 30 Tage Budgetanteil).
-    • Region: us-central1 (Iowa) - Beibehalten für Kostenkontrolle.
-    • Zone: us-central1-a.
-    • Betriebssystem: Ubuntu 22.04 LTS (Minimal) Jammy - Schlank und ressourcenschonend.
-    • Boot-Laufwerk: Gleichmäßig ausgelasteter nichtflüchtiger Speicher (Balanced Persistent Disk), 30 GB. (Maximaler Free Tier für Disk).
-    • Verschlüsselung: Google-verwaltete Verschlüsselungsschlüssel (Standard, sicher und kostenlos).
-    • Netzwerkschnittstelle:
-        ◦ Subnetzwerk: default-us-central1 (Erstellt mit IP-Bereich 172.16.0.0/12 nach Kollisionen im 10.x.x.x-Bereich).
-        ◦ Interne IP: 172.16.0.2.
-    • Firewall-Regeln (Google Cloud):
-        ◦ allow-http: TCP Port 80 (für Nginx).
-        ◦ allow-https: TCP Port 443 (für Nginx).
-        ◦ allow-backend-api: TCP Port 8000 (für FastAPI Backend).
-        ◦ allow-n8n-port-5678: TCP Port 5678 (für N8N Weboberfläche).
-3.3 Datenbank
-    • System: MySQL (Wechsel von PostgreSQL nach hartnäckigen Installationsproblemen).
-    • Hosting-Strategie: Manuelle Installation auf der projekt-pear-vm.
-    • Installation:
-        ◦ sudo apt install mysql-server -y.
-        ◦ sudo mysql_secure_installation (Absicherung, Root-Passwort gesetzt/leer gelassen, anonyme User entfernt).
-    • Datenbank-Name: pear_app_db (Korrigiert von "fleissige_birne_app_db").
-    • Datenbank-Benutzer: app_user (mit starkem Passwort).
-    • Zugriff: Nur intern (localhost) von Diensten auf derselben VM.
-    • Schema-Import: schema.sql für MySQL angepasst und erfolgreich importiert.
-        ◦ SERIAL PRIMARY KEY zu INT AUTO_INCREMENT PRIMARY KEY.
-        ◦ TIMESTAMP WITH TIME ZONE zu DATETIME.
-        ◦ tbl_begleiter um adresse_strasse, adresse_hausnummer, adresse_plz, adresse_ort, firmenname, steuernummer erweitert.
+Das Ziel des Infrastruktur-Setups auf der Google Cloud Platform ist die Bereitstellung einer kosteneffizienten, stabilen und erreichbaren Hosting-Umgebung für PEAR.
+    • Google Cloud Projekt: 
+        ◦ Der Projektname wurde von "Projekt-Pear" zu "PEARv2" umbenannt, um eine klarere Projektidentifikation zu ermöglichen. Zuvor wurde es auch als "fleissige Birne" bezeichnet. 
+        ◦ Es dient als Container für alle Cloud-Ressourcen des Projekts. 
+        ◦ Ein dediziertes Google-Konto, als "geschäftliches" Konto registriert, wird für die Trennung von privaten und Projektaktivitäten verwendet. 
+    • Virtuelle Maschine (VM): 
+        ◦ Dienst: Google Compute Engine. 
+        ◦ Instanz-ID: projekt-pear-vm. Diese wurde neu erstellt, nachdem es Probleme mit Vorgänger-VMs gab. Früher war die ID fleissige-birne-vm. 
+        ◦ Maschinentyp: Derzeit wird der Typ e2-medium (2 vCPUs, 4 GB RAM) verwendet. Dies ist kostenpflichtig (~0,022 $/Stunde in us-central1), wobei die Kosten vom Startguthaben gedeckt werden, da eine höhere Leistung in der Entwicklungsphase benötigt wird. Zuvor wurde ein e2-micro Maschinentyp genutzt, der zwar dauerhaft kostenlos im "Always Free" Tier war, aber zu Ressourcenmangel führte. 
+        ◦ Region: us-central1 (Iowa) wurde beibehalten. 
+        ◦ Betriebssystem: Ubuntu 22.04 LTS (Minimal) Jammy, welches schlank und ressourcenschonend ist. 
+        ◦ Boot-Laufwerk: Ein Balanced Persistent Disk mit 30 GB Speicherplatz, was dem maximalen Free Tier für Disks entspricht. 
+        ◦ Verschlüsselung: Google-verwaltete Verschlüsselungsschlüssel werden standardmäßig verwendet. 
+        ◦ Netzwerkschnittstelle: Subnetzwerk default-us-central1 mit interner IP 172.16.0.2. 
+        ◦ Firewall-Regeln (Google Cloud): Wichtige Regeln sind eingerichtet, um den Zugriff auf HTTP (Port 80), HTTPS (Port 443), das FastAPI Backend (Port 8000) und die N8N Weboberfläche (Port 5678) zu ermöglichen. 
+    • Datenbank: 
+        ◦ System: Die Datenbank wurde von PostgreSQL auf MySQL umgestellt, aufgrund hartnäckiger Installationsprobleme mit PostgreSQL. 
+        ◦ Hosting-Strategie: Die Datenbank ist manuell auf der projekt-pear-vm installiert, um Kosten zu sparen. 
+        ◦ Datenbank-Name: pear_app_db (korrigiert von fleissige_birne_app_db). 
+        ◦ Zugriff: Der Zugriff ist nur intern (localhost) von Diensten auf derselben VM möglich. 
+        ◦ Schema-Import: Das schema.sql wurde für MySQL angepasst und erfolgreich importiert, inklusive Anpassungen wie SERIAL PRIMARY KEY zu INT AUTO_INCREMENT PRIMARY KEY und Erweiterung der tbl_begleiter um Adress- und Firmeninformationen. Das Schema umfasst Tabellen für Kunden, Begleiter, Termine, Dokumentationen, Rechnungen und Rechnungspositionen. 
+4. Frontend- und Backend-Entwicklung
+    • Frontend (Landing Page, Login, Registrierung): 
+        ◦ Wird über den Nginx-Webserver bereitgestellt. 
+        ◦ Ein modernes, klares und responsives Design mit Google Fonts (Montserrat und Poppins) wurde implementiert, inklusive Media Queries für mobile Geräte und einem Sticky Footer. Formularfelder auf der Registrierungsseite sind in zwei Spalten linksbündig angeordnet. 
+        ◦ Das Deployment erfolgt über automatisierte Skripte (deploy_all.sh oder deploy_frontend.sh) von GitHub auf die VM. 
+    • Backend-API (Benutzerregistrierung & KI-Extraktion): 
+        ◦ Implementiert mit Python und FastAPI. 
+        ◦ Bietet Endpunkte für die Benutzerregistrierung (POST /api/register) und die KI-gestützte Datenextraktion aus E-Mails (POST /api/process-email-for-client). 
+        ◦ Die API nutzt Gemini-Integration zur Datenextraktion aus Freitext und implementiert Passwort-Hashing (bcrypt) sowie E-Mail-Eindeutigkeitsprüfung. 
+        ◦ Der aktuelle Status der API ist positiv: Sie läuft und ist über Port 8000 erreichbar! 🎉. 
+5. E-Mail-Verarbeitung für Kundenanlage – Strategiewechsel und Lösung des Berechtigungsproblems
+Die E-Mail-Verarbeitung ist ein zentraler Aspekt für die automatisierte Kundenanlage, insbesondere die automatische Extraktion von Klientendaten aus E-Mails.
+    • Herausforderungen und Strategiewechsel: 
+        ◦ Die anfängliche Implementierung über N8N auf der VM stieß auf anhaltende und fundamentale Probleme, die die Stabilität des Systems gefährdeten. Hauptprobleme waren Ressourcenmangel und Instabilität von N8N (z.B. bei npm-Build-Prozessen), die Komplexität des N8N-Builds aus dem Monorepo, sowie Schwierigkeiten bei der OAuth-Client-Erstellung für E-Mail-Trigger, da die Google Cloud Console keine IP-Adressen als Weiterleitungs-URIs akzeptierte. 
+        ◦ Aufgrund dieser Schwierigkeiten wurde ein Strategiewechsel zu einer serverlosen Architektur entschieden, um die E-Mail-Verarbeitung von der VM zu entkoppeln. 
+    • Neuer Serverloser Ansatz mit Google Cloud Storage & Cloud Run: 
+        ◦ Ziel: Automatisierte, stabile und kostengünstige E-Mail-Verarbeitung für neue Klienten ohne VM-spezifische Instabilität. 
+        ◦ Implementierung: Eingehende E-Mails von Vermittlungsstellen sollen über einen externen E-Mail-Provider an einen Google Cloud Storage Bucket (pear-email-inbox-raw) weitergeleitet werden. Das Speichern einer neuen E-Mail im Bucket löst einen Google Cloud Run-Dienst aus. Dieser Dienst liest die E-Mail und ruft den bestehenden FastAPI-Endpunkt POST /api/process-email-for-client auf der VM zur KI-gestützten Datenextraktion auf. 
+        ◦ Vorteile: Serverlos, wartungsfrei, hochgradig skalierbar und extrem kosteneffizient (nutzt Free-Tier-Kontingente für minimale Nutzung). 
+    • Aktuelles Problem vor der Lösung: Obwohl das Docker-Image für die E-Mail-Verarbeitungsfunktion erfolgreich gebaut wurde, schlug der Push des Docker-Images zur Artifact Registry mit der Fehlermeldung "Permission 'artifactregistry.repositories.uploadArtifacts' denied" fehl. Dies deutete auf ein tieferliegendes Authentifizierungsproblem hin. 
+    • Lösung der Berechtigungsprobleme (Dokument vom 24. Juli 2025): Das Dokument "Dokumentation der Lösung bei Berechtigungsproblemen auf der GCP" beschreibt die Implementierung einer automatisierten CI/CD-Pipeline mit Google Cloud Build, um genau dieses Problem zu beheben und Docker-Images zuverlässig zu bauen und zur Artifact Registry zu pushen. 
+        ◦ Es wird ein Build-Trigger namens dev-team-trigger konfiguriert, der auf Pushes zum main-Branch im GitHub-Repository HystDevTV/PEARv2 reagiert. 
+        ◦ Die cloudbuild.yaml-Konfiguration im Repository definiert den Build-Prozess, der Docker-Images baut und mit dem Commit-SHA und latest taggt, um sie anschließend in die Artifact Registry zu pushen. 
+        ◦ Entscheidend zur Lösung der Berechtigungsprobleme ist die Verwendung eines dedizierten Service Accounts (z.B. build-trigger@pear-dev-teamv1.iam.gserviceaccount.com) mit präzise zugewiesenen Rollen. Zu diesen Rollen gehören: 
+            ▪ Artifact Registry Writer (roles/artifactregistry.writer): Diese spezifische Rolle ermöglicht das Hochladen von Artefakten (uploadArtifacts), was zuvor fehlschlug. 
+            ▪ Cloud-Build-Dienstkonto (roles/cloudbuild.builds.builder): Ermöglicht Cloud Build, Build-Operationen durchzuführen. 
+            ▪ Logs Bucket Writer und Logs Writer (alternativ CLOUD_LOGGING_ONLY in der cloudbuild.yaml): Für das Schreiben von Build-Logs. 
+            ▪ Storage Object Creator und Storage Object Viewer: Für den Umgang mit Objekten in Cloud Storage, z.B. für Logs. 
+            ▪ Developer Connect Read Token Accessor und Secure Source Manager Repository Reader: Für den Zugriff auf das GitHub-Repository. 
+            ▪ Zusätzlich sollte der Benutzer, der den Service Account verwaltet, die Rolle Dienstkontonutzer (roles/iam.serviceAccountUser) auf diesem Service Account haben. 
+        ◦ Dieses Vorgehen bietet Vorteile in Bezug auf Sicherheit, Nachvollziehbarkeit und Skalierbarkeit, indem nur die explizit benötigten Rechte zugewiesen werden. 
+6. Versionsmanagement & Deployment
+    • Versionskontrolle: Git. 
+    • Remote Repository: GitHub (Public HystDevTV/PEARv2). Zuvor gab es auch ein separates privates/öffentliches pear-frontend Repository. 
+    • Lokale Versionierung: package.json ("version": "0.1.1"). 
+    • Automatisches Deployment-Skript auf VM (deploy_all.sh / deploy_frontend.sh): Holt Code von GitHub, kopiert Dateien nach /var/www/html/, setzt Berechtigungen und startet Nginx neu. 
+7. Nicht-Funktionale Anforderungen
+PEAR berücksichtigt umfassende nicht-funktionale Anforderungen.
+    • Sicherheit (NF-SI-001): 
+        ◦ Authentifizierung & Autorisierung: Alle Zugriffe auf das System und die Daten müssen authentifiziert (Login) und autorisiert (Rollen/Rechte) sein. Passwörter müssen gehasht und gesalzen gespeichert werden. Sichere Kommunikation über HTTPS/SSL für alle Web- und API-Verbindungen. 
+        ◦ Datensicherheit: Sensible Klientendaten müssen Ende-zu-Ende verschlüsselt sein (Datenübertragung und ruhende Daten). Regelmäßige, automatisierte und verschlüsselte Backups der Datenbank und abgelegten Dateien (MySQL Backups, Cloud Storage) sind vorgesehen. Zugriff auf die VM und Datenbank nur über SSH-Schlüssel/interne IPs, keine direkten Root-Logins über Passwort. Firewall-Regeln sind restriktiv konfiguriert. 
+        ◦ Optionale VPN-Konfiguration für anonymen Internetzugang über die VM. 
+    • Datenschutz (DSGVO-Konformität) (NF-DL-001): Das System muss von Grund auf DSGVO-konform entwickelt werden. Dies umfasst die Sicherstellung der Klienten-Einwilligung, das Vorhandensein von Auftragsverarbeitungsvereinbarungen (AVVs) mit allen Cloud-Dienstleistern (Google Cloud, Gemini API, externe E-Mail-Provider) sowie die Umsetzung der Betroffenenrechte (Auskunft, Berichtigung, Löschung), Datenminimierung und Zweckbindung. 
+    • Verfügbarkeit (NF-VE-001): Das System muss 24/7 erreichbar sein (Webserver, API, Datenbank) mit mindestens 99,5% Verfügbarkeit. Automatische Neustarts bei Fehlern (systemd für Dienste) sind vorgesehen. 
+    • Skalierbarkeit (NF-SC-001): Das System muss bis zu 1000 Klienten und 50 Alltagsbegleitern unterstützen können. Serverlose Komponenten (Cloud Functions/Run) sollen automatisch skalieren, und kurzfristige Hochskalierung der VM für rechenintensive Aufgaben ist möglich. 
+    • Performance (NF-PF-001): Ladezeiten der Webseiten unter 3 Sekunden und API-Antwortzeiten unter 1 Sekunde für Standardabfragen werden angestrebt. Automatisierte Prozesse sollen effizient und zeitnah ablaufen. 
+    • Benutzerfreundlichkeit (NF-BE-001): Eine intuitive, leicht bedienbare und responsive Oberfläche mit klaren Fehlermeldungen und Rückmeldungen an den Benutzer ist gefordert. 
+    • Wartbarkeit & Erweiterbarkeit (NF-WF-001): Ein modulares Design (Backend-API, Frontend, serverlose Services), Clean Code, gute Dokumentation und automatisierte Deployment-Prozesse (Git-basiert) sind grundlegend. 
+    • Kostenkontrolle (NF-KO-001): Nutzung von Free-Tier-Kontingenten wo immer möglich, kostenbewusstes Design der Infrastruktur (z.B. Pay-per-Use für Spitzenlasten, serverlos für Ereignis-basierte Aufgaben) und transparentes Kosten-Monitoring sind wichtig. 
 
-4. Frontend-Bereitstellung (Landing Page, Login, Registrierung)
-Ziel: Statische Webseiten für Benutzer über das Internet bereitstellen.
-    • Webserver: Nginx (Installation: sudo apt install nginx -y).
-    • Web-Root: /var/www/html/ (Manuell erstellt und Berechtigungen gesetzt).
-    • Dateien: index.html, login.html, register.html, style.css (lokal entwickelt, in GitHub versioniert).
-    • Design: Modernes, klares Design mit Google Fonts (Montserrat für Titel, Poppins für Text). Responsives Design für mobile Geräte (Media Queries) und Sticky Footer implementiert. Formularfelder auf Registrierungsseite in zwei Spalten angeordnet und linksbündig ausgerichtet.
-    • Nginx-Konfiguration (/etc/nginx/sites-available/default): Angepasst, um index.html als Standardseite zu priorisieren.
-
-5. Backend-API (Benutzerregistrierung & KI-Extraktion)
-Ziel: Bereitstellung eines API-Endpunkts für die Benutzerregistrierung und die KI-gestützte Datenextraktion aus E-Mails.
-    • Technologie: Python mit FastAPI.
-    • Installation: pip install fastapi uvicorn 'passlib[bcrypt]' mysql-connector-python google-generativeai requests.
-    • API-Datei: backend_app.py (Code erstellt und angepasst für MySQL-Verbindung, Passwort-Hashing und Gemini-Integration).
-    • Endpunkte:
-        ◦ POST /api/register: Für die Benutzerregistrierung.
-        ◦ POST /api/process-email-for-client: Empfängt E-Mail-Inhalt und ruft Gemini zur Datenextraktion auf.
-    • Logik:
-        ◦ Validierung (Passwortübereinstimmung, Mindestlänge).
-        ◦ Passworthashing (bcrypt).
-        ◦ E-Mail-Eindeutigkeitsprüfung (via Datenbankabfrage).
-        ◦ Datenbank-Insertion in tbl_begleiter.
-        ◦ Gemini-Integration zur Datenextraktion aus Freitext (mittels google-generativeai).
-        ◦ Fehlerbehandlung (z.B. HTTPException für Passwort-Mismatch, E-Mail existiert, interne Fehler).
-    • Start: python3 -m uvicorn backend_app:app --host 0.0.0.0 --port 8000.
-    • Status: API läuft und ist über Port 8000 erreichbar! 🎉
-
-6. E-Mail-Verarbeitung für Kundenanlage (Architekturwechsel & Aktueller Stand)
-6.1 Herausforderungen und Begründung für den Strategiewechsel
-Die ursprüngliche Implementierung der E-Mail-Verarbeitung über N8N auf der VM stieß auf anhaltende und fundamentale Probleme, die die Stabilität des Systems gefährdeten und den Fortschritt blockierten. Zu den Hauptproblemen gehörten:
-    • Ressourcenmangel und Instabilität von N8N: Trotz der e2-medium VM gab es Probleme beim npm-Build-Prozess und Instabilitäten (Received SIGINT, Portbelegung), die eine zuverlässige Ausführung von N8N verhinderten.
-    • Komplexität des N8N-Builds: Der Build aus dem Monorepo war zu fehleranfällig für die VM-Umgebung. Die globale npm-Installation von N8N als Paket war zwar erfolgreich, aber der Dienst selbst blieb instabil.
-    • OAuth-Client-Erstellungsprobleme: Die Google Cloud Console akzeptierte keine IP-Adressen als Weiterleitungs-URIs für OAuth-Clients, was den Gmail-Trigger unmöglich machte. Der IMAP-Trigger mit App-Passwort scheiterte ebenfalls.
-Aufgrund dieser wiederholten und schwerwiegenden Hindernisse wurde die Entscheidung getroffen, die E-Mail-Verarbeitung von der VM zu entkoppeln und auf eine serverlose Architektur umzustellen.
-6.2 Neuer serverloser Ansatz mit Google Cloud Storage & Cloud Run
-    • Ziel: Automatisierte, stabile und kostengünstige E-Mail-Verarbeitung für neue Klienten ohne VM-spezifische Instabilität.
-    • Implementierung:
-        ◦ E-Mail-Empfang: Eingehende E-Mails von Vermittlungsstellen werden über einen externen E-Mail-Provider (z.B. SendGrid, Mailgun) an einen Google Cloud Storage Bucket (pear-email-inbox-raw) weitergeleitet. Fokus liegt hierbei nur auf dem E-Mail-Text-Body, Anlagen werden ignoriert.
-        ◦ Trigger: Das Speichern einer neuen E-Mail-Datei im Cloud Storage Bucket löst automatisch einen Google Cloud Run-Dienst aus.
-        ◦ Verarbeitung: Der Cloud Run-Dienst liest die E-Mail aus dem Bucket, ruft den bestehenden FastAPI-Endpunkt POST /api/process-email-for-client auf der VM zur KI-gestützten Datenextraktion auf und verarbeitet die Daten in der MySQL-Datenbank auf der VM.
-        ◦ Automatisierte E-Mails: Versand von Bestätigungs- und Rückfrage-E-Mails (SMTP-Client in Cloud Run oder separater Dienst).
-    • Vorteile: Serverlos, wartungsfrei, hochgradig skalierbar, extrem kosteneffizient (nutzt Free-Tier-Kontingente für minimale Nutzung), umgeht die Probleme der N8N-Installation.
-    • Status:
-        ◦ Cloud Storage Bucket pear-email-inbox-raw ist erstellt und bereit.
-        ◦ Docker-Image-Build: Das Docker-Image für die E-Mail-Verarbeitungsfunktion wurde erfolgreich gebaut (us-central1-docker.pkg.dev/1090307551330/pear-images/email-processor:latest).
-        ◦ Docker-Image-Push: Der Push des Docker-Images zur Artifact Registry schlägt fehl mit Permission "artifactregistry.repositories.uploadArtifacts" denied. Dies ist das aktuelle Problem.
-            ▪ Ursache: Trotz Zuweisung der Rolle Artifact Registry Create-on-Push Writer an das Benutzerkonto (hystdev2019@gmail.com) und das Dienstkonto der VM, und trotz aggressiver Resets der Authentifizierung (gcloud init, docker login, Docker Desktop Factory Reset), bleibt der Fehler bestehen. Dies deutet auf ein tieferliegendes, hartnäckiges Authentifizierungsproblem im Zusammenspiel zwischen dem lokalen Docker-Client und der Google Cloud Artifact Registry hin.
-
-7. Versionsmanagement & Deployment (Frontend)
-Ziel: Automatisiertes und sauberes Hochladen von Code-Änderungen.
-    • Versionskontrolle: Git.
-    • Remote Repository: GitHub (Public HystDevTV/PEARv2).
-    • Lokale Versionierung: package.json ("version": "0.1.1").
-    • Automatisches Deployment-Skript auf VM (deploy_all.sh): Holt Code von GitHub, kopiert Dateien nach /var/www/html/, setzt Berechtigungen, startet Nginx neu.
-
-8. Nicht-Funktionale Anforderungen (Lastenheft & Pflichtenheft)
-Anforderungen an das System, die sich nicht direkt auf Funktionen, sondern auf Qualität, Sicherheit, Performance etc. beziehen.
-    • NF-SI-001 (Sicherheit):
-        ◦ NF-SI-001a (Authentifizierung & Autorisierung):
-            ▪ Alle Zugriffe auf das System und die Daten müssen authentifiziert (Login) und autorisiert (Rollen/Rechte) sein.
-            ▪ Passwörter müssen gehasht und gesalzen gespeichert werden.
-            ▪ Sichere Kommunikation über HTTPS/SSL für alle Web- und API-Verbindungen.
-        ◦ NF-SI-001b (Datensicherheit):
-            ▪ Alle sensiblen Klientendaten müssen Ende-zu-Ende verschlüsselt sein (Datenübertragung und ruhende Daten auf der Datenbank/Speicher).
-            ▪ Regelmäßige, automatisierte und verschlüsselte Backups der Datenbank und der abgelegten Dateien (MySQL Backups, Cloud Storage).
-            ▪ Zugriff auf die VM und Datenbank nur über SSH-Schlüssel/interne IPs (kein direkter Root-Login über Passwort).
-            ▪ Firewall-Regeln restriktiv konfigurieren (nur notwendige Ports öffnen).
-        ◦ NF-SI-001c (Anonymität/VPN - spezifische Anfragen):
-            ▪ VPN-Konfiguration für Alltagsbegleiter, die anonymen Internetzugang über die VM wünschen (optional, kann als separate Komponente implementiert werden).
-            ▪ Sichere Navigation im Darknet (spezifische Beratungsanfrage, nicht direkt Teil der App-Funktionalität).
-    • NF-DL-001 (Datenschutz & DSGVO-Konformität):
-        ◦ Das System muss von Grund auf DSGVO-konform entwickelt werden.
-        ◦ Einwilligung der Klienten zur Datenverarbeitung muss organisatorisch sichergestellt sein.
-        ◦ Auftragsverarbeitungsvereinbarungen (AVVs) mit allen Cloud-Dienstleistern (Google Cloud, Gemini API, externe E-Mail-Provider) müssen vorhanden sein.
-        ◦ Umsetzung der Betroffenenrechte (Auskunft, Berichtigung, Löschung).
-        ◦ Datenminimierung und Zweckbindung.
-    • NF-VE-001 (Verfügbarkeit):
-        ◦ Das System muss 24/7 erreichbar sein (Webserver, API, Datenbank). Mindestens 99,5% Verfügbarkeit.
-        ◦ Automatische Neustarts bei Fehlern (systemd für Dienste).
-    • NF-SC-001 (Skalierbarkeit):
-        ◦ Das System muss in der Lage sein, mit einer wachsenden Anzahl von Klienten (bis zu 1000) und Alltagsbegleitern (bis zu 50) umzugehen.
-        ◦ Kurzfristige Hochskalierung der VM für rechenintensive Aufgaben. Serverlose Komponenten (Cloud Functions/Run) skalieren automatisch.
-    • NF-PF-001 (Performance):
-        ◦ Ladezeiten der Webseiten unter 3 Sekunden.
-        ◦ API-Antwortzeiten unter 1 Sekunde für Standardabfragen.
-        ◦ Automatisierte Prozesse (E-Mail-Verarbeitung, Rechnungserstellung) sollen effizient und zeitnah ablaufen.
-    • NF-BE-001 (Benutzerfreundlichkeit):
-        ◦ Intuitive und leicht bedienbare Oberfläche.
-        ◦ Responsives Design für Desktop, Tablet und Smartphone.
-        ◦ Klare Fehlermeldungen und Rückmeldungen an den Benutzer.
-    • NF-WF-001 (Wartbarkeit & Erweiterbarkeit):
-        ◦ Modulares Design (Backend-API, Frontend, serverlose Services) für einfache Erweiterung und Wartung.
-        ◦ Clean Code und gute Dokumentation.
-        ◦ Automatisierte Deployment-Prozesse (Git-basiert).
-    • NF-KO-001 (Kostenkontrolle):
-        ◦ Nutzung von Free-Tier-Kontingenten, wo immer möglich.
-        ◦ Kostenbewusstes Design der Infrastruktur (z.B. Pay-per-Use für Spitzenlasten, serverlos für Ereignis-basierte Aufgaben).
-        ◦ Transparentes Kosten-Monitoring.
+Das PEAR-Projekt wird weiterhin aktiv entwickelt. Der Strategiewechsel bei der E-Mail-Verarbeitung hin zu einer serverlosen Architektur und insbesondere die Etablierung einer automatisierten CI/CD-Pipeline mittels Google Cloud Build zur Behebung der Berechtigungsprobleme sind wesentliche Fortschritte, die auf einen klaren Plan zur Überwindung technischer Herausforderungen und zur Sicherstellung der zukünftigen Stabilität und Wartbarkeit hindeuten. Das Projekt ist auf einem guten Weg, seine ambitionierten Ziele der Digitalisierung der Pflegeverwaltung zu erreichen.
