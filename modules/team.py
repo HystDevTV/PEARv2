@@ -28,8 +28,16 @@ class TaskManager:
         g = Github(github_token)
         repo = g.get_repo("HystDevTV/PEARv2")
         issues = repo.get_issues(state="open")
-        self.issues = [issue for issue in issues if not issue.pull_request]
-        logger.info(f"{len(self.issues)} offene GitHub-Issues abgerufen.")
+        # Nur Issues ohne Label 'completed-by-agent' berücksichtigen
+        filtered_issues = []
+        for issue in issues:
+            if issue.pull_request:
+                continue
+            labels = [label.name for label in getattr(issue, 'labels', [])]
+            if "completed-by-agent" not in labels:
+                filtered_issues.append(issue)
+        self.issues = filtered_issues
+        logger.info(f"{len(self.issues)} offene GitHub-Issues ohne 'completed-by-agent' abgerufen.")
         return self.issues
 
     def categorize_issue(self, issue):
