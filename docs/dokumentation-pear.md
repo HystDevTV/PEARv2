@@ -80,3 +80,7 @@ PEAR berücksichtigt umfassende nicht-funktionale Anforderungen.
     • Kostenkontrolle (NF-KO-001): Nutzung von Free-Tier-Kontingenten wo immer möglich, kostenbewusstes Design der Infrastruktur (z.B. Pay-per-Use für Spitzenlasten, serverlos für Ereignis-basierte Aufgaben) und transparentes Kosten-Monitoring sind wichtig. 
 
 Das PEAR-Projekt wird weiterhin aktiv entwickelt. Der Strategiewechsel bei der E-Mail-Verarbeitung hin zu einer serverlosen Architektur und insbesondere die Etablierung einer automatisierten CI/CD-Pipeline mittels Google Cloud Build zur Behebung der Berechtigungsprobleme sind wesentliche Fortschritte, die auf einen klaren Plan zur Überwindung technischer Herausforderungen und zur Sicherstellung der zukünftigen Stabilität und Wartbarkeit hindeuten. Das Projekt ist auf einem guten Weg, seine ambitionierten Ziele der Digitalisierung der Pflegeverwaltung zu erreichen.
+## [NEU am 2025-07-25 07:27:10] Demo-Eintrag für PEAR-Workflow
+Automatisch generiert durch den PEAR Demo-Workflow zur Demonstration der automatisierten Projektdokumentation.
+Workflow ausgeführt am 2025-07-25 um 07:27:10 UTC - Zeigt erfolgreiche Integration von GitHub Actions für PEAR-Automatisierung.
+
