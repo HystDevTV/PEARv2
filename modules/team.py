@@ -27,15 +27,26 @@ class TaskManager:
             return []
         g = Github(github_token)
         repo = g.get_repo("HystDevTV/PEARv2")
-        issues = repo.get_issues(state="open")
-        # Nur Issues ohne Label 'completed-by-agent' berücksichtigen
+        # Optional: Nur ein bestimmtes Issue verarbeiten, falls PEAR_ISSUE_NUMBER gesetzt ist
+        issue_number = os.environ.get("PEAR_ISSUE_NUMBER")
         filtered_issues = []
-        for issue in issues:
-            if issue.pull_request:
-                continue
-            labels = [label.name for label in getattr(issue, 'labels', [])]
-            if "completed-by-agent" not in labels:
-                filtered_issues.append(issue)
+        if issue_number:
+            try:
+                issue = repo.get_issue(int(issue_number))
+                # Prüfe, ob offen und nicht erledigt
+                labels = [label.name for label in getattr(issue, 'labels', [])]
+                if (getattr(issue, 'state', 'open') == 'open') and ("completed-by-agent" not in labels) and not getattr(issue, 'pull_request', False):
+                    filtered_issues.append(issue)
+            except Exception as e:
+                logger.error(f"Fehler beim Abrufen von Issue #{issue_number}: {e}")
+        else:
+            issues = repo.get_issues(state="open")
+            for issue in issues:
+                if getattr(issue, 'pull_request', False):
+                    continue
+                labels = [label.name for label in getattr(issue, 'labels', [])]
+                if "completed-by-agent" not in labels and getattr(issue, 'state', 'open') == 'open':
+                    filtered_issues.append(issue)
         self.issues = filtered_issues
         logger.info(f"{len(self.issues)} offene GitHub-Issues ohne 'completed-by-agent' abgerufen.")
         return self.issues
@@ -57,10 +68,9 @@ class TaskManager:
         return "Koordination"
 
     def assign_tasks(self):
-        # Nur Issues mit state='open' und ohne Label 'completed-by-agent' verarbeiten
+        # Nochmals: Nur Issues mit state='open' und ohne Label 'completed-by-agent' verarbeiten
         for issue in self.issues:
-            # Zusätzlicher Schutz: Prüfe explizit den Status und das Label
-            if hasattr(issue, 'state') and issue.state != 'open':
+            if getattr(issue, 'state', 'open') != 'open':
                 continue
             labels = [label.name for label in getattr(issue, 'labels', [])]
             if 'completed-by-agent' in labels:
