@@ -52,29 +52,36 @@ class TaskManager:
         # Verteile Aufgaben aus Issues nach Themen/Agenten und Einzelaufgaben
         import re
         assignments = {agent.name: [] for agent in self.agents}
+        # Mapping von Topic-Überschrift zu Agentenrolle
+        topic_to_role_map = {
+            'QA/Testing-Spezialist': 'Qualitätssicherung',
+            'Data/AI Engineer': 'E-Mail- & KI-Verarbeitung',
+            'Backend-Entwickler': 'API & Datenbank',
+            'Dokumentations-Agent': 'Dokumentation',
+            'DevOps-Engineer': 'Deployment & Infrastruktur',
+            'Frontend-Entwickler': 'UI & UX',
+            'Projektmanager': 'Koordination',
+            # ggf. weitere Zuordnungen ergänzen
+        }
         for issue in self.issues:
             body = issue.body or ""
             lines = body.splitlines()
             current_topic = None
-            topic_map = {}  # z.B. {'A': 'QA/Testing-Spezialist'}
-            topic_regex = re.compile(r"^([A-Z])\.\s+([\w\-/]+)", re.UNICODE)
+            topic_regex = re.compile(r"^([A-Z])\.\s+([\w\-/ ]+)", re.UNICODE)
             task_regex = re.compile(r"^(\d+)\.\s+(.*)")
-            # Mapping von Topic zu Agentenrolle
-            topic_to_role = {}
-            # 1. Themen (A., B., ...) und Aufgaben (1., 2., ...) extrahieren
             for line in lines:
                 topic_match = topic_regex.match(line.strip())
                 if topic_match:
                     current_topic = topic_match.group(2).strip()
-                    topic_to_role[current_topic] = current_topic  # Rolle = Überschrift
                     continue
                 task_match = task_regex.match(line.strip())
                 if task_match and current_topic:
                     task_text = task_match.group(2).strip()
-                    # Agentenrolle suchen, die zu current_topic passt
+                    # Explizite Mapping-Suche
+                    agent_role = topic_to_role_map.get(current_topic, current_topic)
                     assigned = False
                     for agent in self.agents:
-                        if agent.role.lower() in current_topic.lower() or current_topic.lower() in agent.role.lower():
+                        if agent.role.lower() == agent_role.lower():
                             agent.tasks.append({
                                 'title': task_text,
                                 'description': f"(aus Issue: {issue.title})",
