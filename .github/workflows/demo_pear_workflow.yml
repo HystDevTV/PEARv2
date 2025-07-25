@@ -19,12 +19,11 @@ jobs:
           pip install -r requirements.txt
       - name: Demo-Aufgabe: Dokumentationseintrag erzeugen
         run: |
-          echo "## [NEU am $(date +'%Y-%m-%d')] Demo-Eintrag für PEAR-Workflow" >> docs/dokumentation-pear.md
-          echo "Automatisch generiert durch den PEAR Demo-Workflow." >> docs/dokumentation-pear.md
+          python scripts/demo_workflow_test.py
       - name: Commit & Push Demo-Doku
         run: |
           git config --global user.name "pear-bot"
           git config --global user.email "pear-bot@users.noreply.github.com"
           git add docs/dokumentation-pear.md
-          git commit -m "[PEAR] Demo: Automatischer Doku-Eintrag" || echo "Nichts zu committen"
+          git commit -m "[PEAR] Demo: Automatischer Doku-Eintrag vom $(date +'%Y-%m-%d %H:%M:%S')" || echo "Nichts zu committen"
           git push
