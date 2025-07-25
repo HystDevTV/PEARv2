@@ -59,6 +59,7 @@ class TaskManager:
             'Backend-Entwickler': 'API & Datenbank',
             'Dokumentations-Agent': 'Dokumentation',
             'DevOps-Engineer': 'Deployment & Infrastruktur',
+            'DevOps Engineer': 'Deployment & Infrastruktur',
             'Frontend-Entwickler': 'UI & UX',
             'Projektmanager': 'Koordination',
             # ggf. weitere Zuordnungen ergänzen
