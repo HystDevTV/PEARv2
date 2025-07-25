@@ -49,62 +49,38 @@ class TaskManager:
         return "Koordination"
 
     def assign_tasks(self):
-        # Verteile Aufgaben aus Issues nach Themen/Agenten und Einzelaufgaben
-        import re
-        assignments = {agent.name: [] for agent in self.agents}
-        # Mapping von Topic-Überschrift zu Agentenrolle
-        topic_to_role_map = {
-            'QA/Testing-Spezialist': 'Qualitätssicherung',
-            'Data/AI Engineer': 'E-Mail- & KI-Verarbeitung',
-            'Backend-Entwickler': 'API & Datenbank',
-            'Backend Entwickler': 'API & Datenbank',
-            'Dokumentations-Agent': 'Dokumentation',
-            'DevOps-Engineer': 'Deployment & Infrastruktur',
-            'DevOps Engineer': 'Deployment & Infrastruktur',
-            'Frontend-Entwickler': 'UI & UX',
-            'Frontend Entwickler': 'UI & UX',
-            'Projektmanager': 'Koordination',
-            # ggf. weitere Zuordnungen ergänzen
-        }
+        # Neue Logik: Pro Issue wird nur eine Aufgabe an einen Agenten zugewiesen (Issue = Einzelaufgabe)
         for issue in self.issues:
-            body = issue.body or ""
-            lines = body.splitlines()
-            current_topic = None
-            topic_regex = re.compile(r"^([A-Z])\.\s+([\w\-/ ]+)", re.UNICODE)
-            task_regex = re.compile(r"^(\d+)\.\s+(.*)")
-            for line in lines:
-                topic_match = topic_regex.match(line.strip())
-                if topic_match:
-                    current_topic = topic_match.group(2).strip()
-                    continue
-                task_match = task_regex.match(line.strip())
-                if task_match and current_topic:
-                    task_text = task_match.group(2).strip()
-                    # Explizite Mapping-Suche
-                    agent_role = topic_to_role_map.get(current_topic, current_topic)
-                    assigned = False
+            assigned = False
+            # Rolle aus Label oder Titel/Body ableiten
+            labels = [label.name.lower() for label in getattr(issue, 'labels', [])]
+            role_map = {
+                'qualitätssicherung': 'Qualitätssicherung',
+                'e-mail- & ki-verarbeitung': 'E-Mail- & KI-Verarbeitung',
+                'api & datenbank': 'API & Datenbank',
+                'dokumentation': 'Dokumentation',
+                'deployment & infrastruktur': 'Deployment & Infrastruktur',
+                'ui & ux': 'UI & UX',
+                'koordination': 'Koordination',
+            }
+            # 1. Nach Label zuweisen
+            for label in labels:
+                if label in role_map:
                     for agent in self.agents:
-                        if agent.role.lower() == agent_role.lower():
+                        if agent.role.lower() == role_map[label].lower():
                             agent.tasks.append({
-                                'title': task_text,
-                                'description': f"(aus Issue: {issue.title})",
+                                'title': issue.title,
+                                'description': issue.body,
                                 'issue_number': getattr(issue, 'number', None)
                             })
                             assigned = True
                             break
-                    # Fallback: an Projektmanager
-                    if not assigned:
-                        self.agents[0].tasks.append({
-                            'title': task_text,
-                            'description': f"(aus Issue: {issue.title})",
-                            'issue_number': getattr(issue, 'number', None)
-                        })
-            # Falls keine Unteraufgaben gefunden, wie bisher behandeln
-            if not any(task_regex.match(line.strip()) for line in lines):
-                assigned = False
+                    if assigned:
+                        break
+            # 2. Falls nicht zugewiesen: nach Rolle im Titel/Body suchen
+            if not assigned:
                 for agent in self.agents:
-                    task_text = (issue.title or "") + " " + (issue.body or "")
-                    if agent.role.lower() in task_text.lower():
+                    if agent.role.lower() in (issue.title or '').lower() or agent.role.lower() in (issue.body or '').lower():
                         agent.tasks.append({
                             'title': issue.title,
                             'description': issue.body,
@@ -112,12 +88,13 @@ class TaskManager:
                         })
                         assigned = True
                         break
-                if not assigned:
-                    self.agents[0].tasks.append({
-                        'title': issue.title,
-                        'description': issue.body,
-                        'issue_number': getattr(issue, 'number', None)
-                    })
+            # 3. Fallback: an Projektmanager (PL, meist self.agents[0])
+            if not assigned and self.agents:
+                self.agents[0].tasks.append({
+                    'title': issue.title,
+                    'description': issue.body,
+                    'issue_number': getattr(issue, 'number', None)
+                })
         logger.info("Aufgaben dynamisch an Agenten verteilt.")
 
     def run(self):
