@@ -51,16 +51,26 @@ class TaskManager:
     def assign_tasks(self):
         # Verteile Issues nach Kategorie an Agenten
         assignments = {agent.name: [] for agent in self.agents}
-        for issue in self.issues:
-            category = self.categorize_issue(issue)
+        for task in self.issues:
+            assigned = False
+            # 1. Zuweisung nach Rollennamen
             for agent in self.agents:
-                if agent.role == category:
-                    assignments[agent.name].append((issue.title, issue.number))
+                task_text = (task.title or "") + " " + (task.body or "")
+                if agent.role.lower() in task_text.lower():
+                    agent.tasks.append(task)
+                    assigned = True
                     break
-        # Setze Aufgaben und Issue-Nummern dynamisch
-        for agent in self.agents:
-            agent.tasks = [t[0] for t in assignments[agent.name]]
-            agent.task_issue_numbers = [t[1] for t in assignments[agent.name]]
+            # 2. Fallback: nach Skill zuweisen
+            if not assigned:
+                for agent in self.agents:
+                    if hasattr(agent, 'skills') and agent.skills:
+                        if any(skill.lower() in ((task.title or "") + " " + (task.body or "")).lower() for skill in agent.skills):
+                            agent.tasks.append(task)
+                            assigned = True
+                            break
+            # 3. Wenn keine Rolle/Skill passt, an Projektmanager
+            if not assigned:
+                self.agents[0].tasks.append(task)
         logger.info("Aufgaben dynamisch an Agenten verteilt.")
 
     def run(self):
