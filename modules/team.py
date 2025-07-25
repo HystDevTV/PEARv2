@@ -296,7 +296,7 @@ def build_team(db_connector: Optional[DatabaseConnector] = None) -> List[Agent]:
         Agent(
             name="Projektmanager",
             role="Koordination",
-            backstory="Hat jahrelange Erfahrung in agilen Projekten und koordiniert alle Teams.",
+            backstory="Hat jahrelange Erfahrung in agilen Projekten und koordiniert alle Teams.\n\nStammaufgabe: Für die Verteilung neuer Aufgaben im Team den Befehl 'python create_issues.py' ausführen, um Issues im GitHub-Repo automatisiert anzulegen.",
             db_connector=db_connector
         ),
         Agent(
