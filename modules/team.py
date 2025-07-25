@@ -49,41 +49,65 @@ class TaskManager:
         return "Koordination"
 
     def assign_tasks(self):
-        # Verteile Issues nach Kategorie an Agenten
+        # Verteile Aufgaben aus Issues nach Themen/Agenten und Einzelaufgaben
+        import re
         assignments = {agent.name: [] for agent in self.agents}
-        for task in self.issues:
-            assigned = False
-            # 1. Zuweisung nach Rollennamen
-            for agent in self.agents:
-                task_text = (task.title or "") + " " + (task.body or "")
-                if agent.role.lower() in task_text.lower():
-                    # Speichere nur Titel und Beschreibung als String
-                    agent.tasks.append({
-                        'title': task.title,
-                        'description': task.body,
-                        'issue_number': getattr(task, 'number', None)
-                    })
-                    assigned = True
-                    break
-            # 2. Fallback: nach Skill zuweisen
-            if not assigned:
-                for agent in self.agents:
-                    if hasattr(agent, 'skills') and agent.skills:
-                        if any(skill.lower() in ((task.title or "") + " " + (task.body or "")).lower() for skill in agent.skills):
+        for issue in self.issues:
+            body = issue.body or ""
+            lines = body.splitlines()
+            current_topic = None
+            topic_map = {}  # z.B. {'A': 'QA/Testing-Spezialist'}
+            topic_regex = re.compile(r"^([A-Z])\.\s+([\w\-/]+)", re.UNICODE)
+            task_regex = re.compile(r"^(\d+)\.\s+(.*)")
+            # Mapping von Topic zu Agentenrolle
+            topic_to_role = {}
+            # 1. Themen (A., B., ...) und Aufgaben (1., 2., ...) extrahieren
+            for line in lines:
+                topic_match = topic_regex.match(line.strip())
+                if topic_match:
+                    current_topic = topic_match.group(2).strip()
+                    topic_to_role[current_topic] = current_topic  # Rolle = Überschrift
+                    continue
+                task_match = task_regex.match(line.strip())
+                if task_match and current_topic:
+                    task_text = task_match.group(2).strip()
+                    # Agentenrolle suchen, die zu current_topic passt
+                    assigned = False
+                    for agent in self.agents:
+                        if agent.role.lower() in current_topic.lower() or current_topic.lower() in agent.role.lower():
                             agent.tasks.append({
-                                'title': task.title,
-                                'description': task.body,
-                                'issue_number': getattr(task, 'number', None)
+                                'title': task_text,
+                                'description': f"(aus Issue: {issue.title})",
+                                'issue_number': getattr(issue, 'number', None)
                             })
                             assigned = True
                             break
-            # 3. Wenn keine Rolle/Skill passt, an Projektmanager
-            if not assigned:
-                self.agents[0].tasks.append({
-                    'title': task.title,
-                    'description': task.body,
-                    'issue_number': getattr(task, 'number', None)
-                })
+                    # Fallback: an Projektmanager
+                    if not assigned:
+                        self.agents[0].tasks.append({
+                            'title': task_text,
+                            'description': f"(aus Issue: {issue.title})",
+                            'issue_number': getattr(issue, 'number', None)
+                        })
+            # Falls keine Unteraufgaben gefunden, wie bisher behandeln
+            if not any(task_regex.match(line.strip()) for line in lines):
+                assigned = False
+                for agent in self.agents:
+                    task_text = (issue.title or "") + " " + (issue.body or "")
+                    if agent.role.lower() in task_text.lower():
+                        agent.tasks.append({
+                            'title': issue.title,
+                            'description': issue.body,
+                            'issue_number': getattr(issue, 'number', None)
+                        })
+                        assigned = True
+                        break
+                if not assigned:
+                    self.agents[0].tasks.append({
+                        'title': issue.title,
+                        'description': issue.body,
+                        'issue_number': getattr(issue, 'number', None)
+                    })
         logger.info("Aufgaben dynamisch an Agenten verteilt.")
 
     def run(self):
