@@ -57,10 +57,12 @@ class TaskManager:
             'QA/Testing-Spezialist': 'Qualitätssicherung',
             'Data/AI Engineer': 'E-Mail- & KI-Verarbeitung',
             'Backend-Entwickler': 'API & Datenbank',
+            'Backend Entwickler': 'API & Datenbank',
             'Dokumentations-Agent': 'Dokumentation',
             'DevOps-Engineer': 'Deployment & Infrastruktur',
             'DevOps Engineer': 'Deployment & Infrastruktur',
             'Frontend-Entwickler': 'UI & UX',
+            'Frontend Entwickler': 'UI & UX',
             'Projektmanager': 'Koordination',
             # ggf. weitere Zuordnungen ergänzen
         }
@@ -400,6 +402,23 @@ def main():
     else:
         db_connector.create_tables()
         logger.info("Datenbank erfolgreich initialisiert")
+
+    # PL-Agent führt create_issues.py aus (sofern vorhanden)
+    import subprocess
+    import os
+    create_issues_path = os.path.join(os.path.dirname(__file__), '..', 'create_issues.py')
+    if os.path.exists(create_issues_path):
+        logger.info("Projektmanager (PL) führt create_issues.py aus ...")
+        try:
+            result = subprocess.run(['python', create_issues_path], capture_output=True, text=True)
+            logger.info(f"create_issues.py Output:\n{result.stdout}")
+            if result.stderr:
+                logger.warning(f"create_issues.py Fehler:\n{result.stderr}")
+        except Exception as e:
+            logger.error(f"Fehler beim Ausführen von create_issues.py: {e}")
+    else:
+        logger.warning("create_issues.py nicht gefunden – keine neuen Issues erstellt.")
+
     team = build_team(db_connector)
     # TaskManager übernimmt die dynamische Aufgabenverteilung und Ausführung
     manager = TaskManager(team, db_connector)
