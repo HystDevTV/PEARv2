@@ -1,0 +1,40 @@
+name: PEAR Feature Branch Automation
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  pear-task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Automatisierte PEAR-Aufgabe ausführen
+        run: |
+          echo "Starte automatisierte Bearbeitung der Aufgabe im Feature-Branch..."
+          # Hier können weitere Automatisierungsschritte ergänzt werden
+          # z.B. python scripts/pear_agent_execute.py --task "$TASK_TITLE"
+      - name: Commit & Push Ergebnisse
+        run: |
+          git config --global user.name "pear-bot"
+          git config --global user.email "pear-bot@users.noreply.github.com"
+          git add .
+          git commit -m "[PEAR] Automatisierte Bearbeitung der Aufgabe" || echo "Nichts zu committen"
+          git push
+      - name: Pull Request erstellen
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "[PEAR] Automatisierte Bearbeitung der Aufgabe"
+          body: "Dieser Pull Request enthält die automatisierten Änderungen für die jeweilige Aufgabe."
+          branch: ${{ github.ref_name }}
+          base: main
