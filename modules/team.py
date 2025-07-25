@@ -57,11 +57,17 @@ class TaskManager:
         return "Koordination"
 
     def assign_tasks(self):
-        # Neue Logik: Pro Issue wird nur eine Aufgabe an einen Agenten zugewiesen (Issue = Einzelaufgabe)
+        # Nur Issues mit state='open' und ohne Label 'completed-by-agent' verarbeiten
         for issue in self.issues:
+            # Zusätzlicher Schutz: Prüfe explizit den Status und das Label
+            if hasattr(issue, 'state') and issue.state != 'open':
+                continue
+            labels = [label.name for label in getattr(issue, 'labels', [])]
+            if 'completed-by-agent' in labels:
+                continue
             assigned = False
             # Rolle aus Label oder Titel/Body ableiten
-            labels = [label.name.lower() for label in getattr(issue, 'labels', [])]
+            labels_lower = [l.lower() for l in labels]
             role_map = {
                 'qualitätssicherung': 'Qualitätssicherung',
                 'e-mail- & ki-verarbeitung': 'E-Mail- & KI-Verarbeitung',
@@ -72,7 +78,7 @@ class TaskManager:
                 'koordination': 'Koordination',
             }
             # 1. Nach Label zuweisen
-            for label in labels:
+            for label in labels_lower:
                 if label in role_map:
                     for agent in self.agents:
                         if agent.role.lower() == role_map[label].lower():
