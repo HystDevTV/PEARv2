@@ -102,45 +102,108 @@ class Agent:
     
     # Spezifische Task-Verarbeitungsmethoden je nach Agentenrolle
     def _process_infrastructure_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Verarbeitet Infrastruktur-Aufgaben (Kategorie A)"""
-        logger.info(f"Infrastructure Agent verarbeitet: {task['title']}")
-        # Implementiere hier die spezifische Logik für Infrastrukturaufgaben
-        return {"status": "completed", "message": "Infrastruktur-Aufgabe abgeschlossen"}
+        """Verarbeitet QA/Testing-Aufgaben (Kategorie A)"""
+        logger.info(f"QA/Testing-Spezialist verarbeitet: {task['title']}")
+        
+        # Spezifische Logik für QA/Testing-Aufgaben
+        if "Cloud Build" in task['title']:
+            # Cloud Build Trigger testing
+            logger.info("Teste Cloud Build Trigger (Build, Push, Deploy, Log-Bucket)")
+            return {"status": "in_progress", "message": "Cloud Build Tests gestartet"}
+        elif "Autorisierung" in task['title'] or "Authorization" in task['title']:
+            # Authorization problems check
+            logger.info("Prüfe Authorisierungsprobleme von PEAR-DEV-TeamV1")
+            return {"status": "in_progress", "message": "Berechtigungsprüfung läuft"}
+        elif "Test" in task['title']:
+            # Automated testing
+            logger.info("Schreibe automatisierte Tests für CI/CD-Pipeline")
+            return {"status": "in_progress", "message": "Automatisierte Tests werden entwickelt"}
+        
+        return {"status": "completed", "message": "QA/Testing-Aufgabe abgeschlossen"}
     
     def _process_feature_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Verarbeitet Feature-Aufgaben (Kategorie B)"""
-        logger.info(f"Feature Agent verarbeitet: {task['title']}")
-        # Implementiere hier die spezifische Logik für Feature-Aufgaben
-        return {"status": "completed", "message": "Feature-Aufgabe abgeschlossen"}
+        """Verarbeitet Data/AI Engineer-Aufgaben (Kategorie B)"""
+        logger.info(f"Data/AI Engineer verarbeitet: {task['title']}")
+        
+        # Spezifische Logik für Data/AI-Aufgaben
+        if "Datenbank" in task['title']:
+            # Database analysis and optimization
+            logger.info("Analysiere Datenbank: Struktur, Integrität, Performance")
+            return {"status": "in_progress", "message": "Datenbank-Analyse läuft"}
+        elif "Backup" in task['title']:
+            # Backup strategy
+            logger.info("Entwickle und teste Backup-Strategie")
+            return {"status": "in_progress", "message": "Backup-Strategie wird implementiert"}
+        elif "erweitern" in task['title']:
+            # Database extension
+            logger.info("Erweitere Datenbank für neue Features")
+            return {"status": "in_progress", "message": "Datenbank-Erweiterung läuft"}
+        
+        return {"status": "completed", "message": "Data/AI-Aufgabe abgeschlossen"}
     
     def _process_workflow_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Verarbeitet Workflow-Aufgaben (Kategorie C)"""
-        logger.info(f"Workflow Agent verarbeitet: {task['title']}")
-        # Implementiere hier die spezifische Logik für Workflow-Aufgaben
-        return {"status": "completed", "message": "Workflow-Aufgabe abgeschlossen"}
+        """Verarbeitet Backend-Entwickler-Aufgaben (Kategorie C)"""
+        logger.info(f"Backend-Entwickler verarbeitet: {task['title']}")
+        
+        # Spezifische Logik für Backend-Aufgaben
+        if "Firebase" in task['title']:
+            # Firebase authentication integration
+            logger.info("Implementiere Firebase-Authentifizierung")
+            return {"status": "in_progress", "message": "Firebase-Integration läuft"}
+        elif "API" in task['title']:
+            # API endpoints implementation
+            logger.info("Entwickle API-Endpunkte für Authentifizierung und User-Profile")
+            return {"status": "in_progress", "message": "API-Endpunkte werden implementiert"}
+        elif "User-Management" in task['title']:
+            # User management system
+            logger.info("Schreibe Python-Code für User-Management")
+            return {"status": "in_progress", "message": "User-Management wird entwickelt"}
+        
+        return {"status": "completed", "message": "Backend-Aufgabe abgeschlossen"}
     
     def _process_onboarding_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Verarbeitet Onboarding-Aufgaben (Kategorie D)"""
-        logger.info(f"Onboarding Agent verarbeitet: {task['title']}")
-        # Implementiere hier die spezifische Logik für Onboarding-Aufgaben
-        return {"status": "completed", "message": "Onboarding-Aufgabe abgeschlossen"}
+        """Verarbeitet Dokumentations-Agent-Aufgaben (Kategorie D)"""
+        logger.info(f"Dokumentations-Agent verarbeitet: {task['title']}")
+        
+        # Spezifische Logik für Dokumentations-Aufgaben
+        if "dokumentation-pear.md" in task['title'] or "Dokumentation" in task['title']:
+            # Documentation updates
+            logger.info("Aktualisiere dokumentation-pear.md mit neuen Einträgen")
+            # Add [NEU am DATE] markers
+            from datetime import datetime
+            current_date = datetime.now().strftime("%d.%m.%Y")
+            logger.info(f"Markiere neue Einträge mit [NEU am {current_date}]")
+            return {"status": "in_progress", "message": f"Dokumentation wird aktualisiert [NEU am {current_date}]"}
+        elif "Zusammenfassung" in task['title']:
+            # Summary creation for newcomers
+            logger.info("Erstelle Zusammenfassungen für Neueinsteiger")
+            return {"status": "in_progress", "message": "Zusammenfassungen werden erstellt"}
+        
+        return {"status": "completed", "message": "Dokumentations-Aufgabe abgeschlossen"}
     
     @classmethod
     def from_container(cls, container_url: str, role: str) -> 'Agent':
         """Erstellt einen Agenten aus einem Container-Image"""
         # In einer realen Implementierung würde hier der Agent aus dem Container geladen
-        name = f"PEAR-{role.capitalize()}-Agent"
+        # Agent-Namen basierend auf deutschen Rollen-Definitionen
+        role_names = {
+            "infrastructure": "QA-Testing-Spezialist",
+            "feature": "Data-AI-Engineer", 
+            "workflow": "Backend-Entwickler",
+            "onboarding": "Dokumentations-Agent"
+        }
+        name = f"PEAR-{role_names.get(role, role.capitalize())}-Agent"
         skills = []
         
         # Skills je nach Rolle definieren
-        if role == "infrastructure":
-            skills = ["Docker", "Cloud Build", "GCP", "CI/CD"]
-        elif role == "feature":
-            skills = ["Python", "API", "Automatisierung"]
-        elif role == "workflow":
-            skills = ["Dokumentation", "Prozessoptimierung"]
-        elif role == "onboarding":
-            skills = ["Training", "Wissensmanagement"]
+        if role == "infrastructure":  # QA/Testing-Spezialist
+            skills = ["Cloud Build", "CI/CD Testing", "Authorization", "Pipeline Integration", "GCP", "Docker"]
+        elif role == "feature":       # Data/AI Engineer
+            skills = ["MySQL", "Database Design", "Performance Analysis", "Backup Strategies", "Data Integrity", "SQL"]
+        elif role == "workflow":      # Backend-Entwickler
+            skills = ["FastAPI", "Firebase Auth", "Python", "API Development", "User Management", "Security"]
+        elif role == "onboarding":    # Dokumentations-Agent
+            skills = ["Technical Writing", "Documentation", "Markdown", "Knowledge Management", "German", "Process Documentation"]
         
         return cls(name, role, skills)
 
@@ -282,11 +345,11 @@ class TaskManager:
     def _map_category_to_role(self, category: str) -> str:
         """Mappt eine Kategorie (A,B,C,D) zu einer Agentenrolle"""
         mapping = {
-            "A": "infrastructure",
-            "B": "feature",
-            "C": "workflow",
-            "D": "onboarding",
-            "unknown": "feature"  # Fallback
+            "A": "infrastructure",     # QA/Testing-Spezialist
+            "B": "feature",           # Data/AI Engineer
+            "C": "workflow",          # Backend-Entwickler
+            "D": "onboarding",        # Dokumentations-Agent
+            "unknown": "feature"      # Fallback
         }
         return mapping.get(category, "feature")
     
