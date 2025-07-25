@@ -57,7 +57,12 @@ class TaskManager:
             for agent in self.agents:
                 task_text = (task.title or "") + " " + (task.body or "")
                 if agent.role.lower() in task_text.lower():
-                    agent.tasks.append(task)
+                    # Speichere nur Titel und Beschreibung als String
+                    agent.tasks.append({
+                        'title': task.title,
+                        'description': task.body,
+                        'issue_number': getattr(task, 'number', None)
+                    })
                     assigned = True
                     break
             # 2. Fallback: nach Skill zuweisen
@@ -65,12 +70,20 @@ class TaskManager:
                 for agent in self.agents:
                     if hasattr(agent, 'skills') and agent.skills:
                         if any(skill.lower() in ((task.title or "") + " " + (task.body or "")).lower() for skill in agent.skills):
-                            agent.tasks.append(task)
+                            agent.tasks.append({
+                                'title': task.title,
+                                'description': task.body,
+                                'issue_number': getattr(task, 'number', None)
+                            })
                             assigned = True
                             break
             # 3. Wenn keine Rolle/Skill passt, an Projektmanager
             if not assigned:
-                self.agents[0].tasks.append(task)
+                self.agents[0].tasks.append({
+                    'title': task.title,
+                    'description': task.body,
+                    'issue_number': getattr(task, 'number', None)
+                })
         logger.info("Aufgaben dynamisch an Agenten verteilt.")
 
     def run(self):
@@ -232,16 +245,20 @@ class Agent:
             self.db_agent_id = self.db_connector.store_agent(self.name, self.role, self.backstory)
             logger.info(f"Agent {self.name} mit DB-ID {self.db_agent_id} registriert")
 
-    def execute_task(self, task: str, category: str = "", priority: int = 0, issue_number: int = None) -> bool:
-        logger.info(f"{self.name} startet Aufgabe: {task}")
+    def execute_task(self, task, category: str = "", priority: int = 0, issue_number: int = None) -> bool:
+        # task ist jetzt ein dict mit title, description, issue_number
+        title = task['title'] if isinstance(task, dict) else str(task)
+        description = task.get('description', '') if isinstance(task, dict) else ''
+        issue_number = task.get('issue_number', None) if isinstance(task, dict) else issue_number
+        logger.info(f"{self.name} startet Aufgabe: {title}")
         task_id = None
         if self.db_connector and self.db_agent_id:
-            task_id = self.db_connector.store_task(task, "", category, priority, self.db_agent_id)
-        result = self._process_task_by_role(task)
+            task_id = self.db_connector.store_task(title, description, category, priority, self.db_agent_id)
+        result = self._process_task_by_role(title)
         if self.db_connector and task_id and self.db_agent_id:
             self.db_connector.complete_task(task_id, self.db_agent_id, result)
-        self.completed_tasks.append(task)
-        logger.info(f"{self.name} hat Aufgabe abgeschlossen: {task}")
+        self.completed_tasks.append(title)
+        logger.info(f"{self.name} hat Aufgabe abgeschlossen: {title}")
         # GitHub-Kommentar nach Abschluss
         if issue_number:
             self._update_github_issue(issue_number, result)
@@ -286,10 +303,7 @@ class Agent:
     def execute_all_tasks(self) -> None:
         logger.info(f"{self.name} führt {len(self.tasks)} Aufgaben aus")
         for i, task in enumerate(self.tasks, 1):
-            issue_number = None
-            if self.task_issue_numbers and len(self.task_issue_numbers) >= i:
-                issue_number = self.task_issue_numbers[i-1]
-            self.execute_task(task, category=self.role, priority=len(self.tasks) - i + 1, issue_number=issue_number)
+            self.execute_task(task, category=self.role, priority=len(self.tasks) - i + 1)
 
 def build_team(db_connector: Optional[DatabaseConnector] = None) -> List[Agent]:
     return [
