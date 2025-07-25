@@ -80,3 +80,41 @@ PEAR berücksichtigt umfassende nicht-funktionale Anforderungen.
     • Kostenkontrolle (NF-KO-001): Nutzung von Free-Tier-Kontingenten wo immer möglich, kostenbewusstes Design der Infrastruktur (z.B. Pay-per-Use für Spitzenlasten, serverlos für Ereignis-basierte Aufgaben) und transparentes Kosten-Monitoring sind wichtig. 
 
 Das PEAR-Projekt wird weiterhin aktiv entwickelt. Der Strategiewechsel bei der E-Mail-Verarbeitung hin zu einer serverlosen Architektur und insbesondere die Etablierung einer automatisierten CI/CD-Pipeline mittels Google Cloud Build zur Behebung der Berechtigungsprobleme sind wesentliche Fortschritte, die auf einen klaren Plan zur Überwindung technischer Herausforderungen und zur Sicherstellung der zukünftigen Stabilität und Wartbarkeit hindeuten. Das Projekt ist auf einem guten Weg, seine ambitionierten Ziele der Digitalisierung der Pflegeverwaltung zu erreichen.
+
+8. Task-Management und Agentenverteilung [NEU am 25.07.2025]
+Zur strukturierten Abarbeitung der noch offenen Aufgaben wurde ein umfassendes Task-Management-System implementiert. Basierend auf Issue #16 wurden die Aufgaben thematisch in vier Hauptkategorien (A-D) sowie optionale EXTRA-Aufgaben gruppiert:
+
+    • Kategorie A - QA/Testing-Spezialist: 
+        ◦ Cloud Build Trigger der PEARv2-VM vollständig testen (Build, Push, Deploy, Log-Bucket prüfen). Diese Aufgabe ist kritisch für Deployment und Security. 
+        ◦ Prüfung, ob die Authorisierungsprobleme (wie in PEAR-DEV-TeamV1 gelöst) auch in PEARv2 auftreten und ggf. Übertragung der Lösung. 
+        ◦ Automatisierte Tests für neue Features schreiben und in die CI/CD-Pipeline integrieren. 
+    • Kategorie B - Data/AI Engineer: 
+        ◦ Datenbank der PEARv2-VM prüfen: Struktur, Integrität, Performance analysieren. 
+        ◦ Datenbank ggf. erweitern (z.B. neue Tabellen/Spalten für neue Features). 
+        ◦ Backup- und Restore-Strategie für die Datenbank dokumentieren und umfassend testen. 
+    • Kategorie C - Backend-Entwickler: 
+        ◦ Firebase-Authentifizierung ins bestehende FastAPI Backend einbauen (Registrierung, Login, Token-Handling). 
+        ◦ Python-Code für Authentifizierung und User-Management entwickeln. 
+        ◦ API-Endpunkte für Authentifizierung und User-Profile implementieren. 
+    • Kategorie D - Dokumentations-Agent: 
+        ◦ Alle neuen Schritte und Änderungen in der dokumentation-pear.md dokumentieren. 
+        ◦ Neue Einträge mit aktuellem Datum und Kommentar „[NEU am <Datum>]" kennzeichnen. 
+        ◦ Kurze Zusammenfassungen der Änderungen/Erkenntnisse für Neueinsteiger ergänzen. 
+    • EXTRA (Optional): 
+        ◦ Automatische Secrets-Verwaltung via Google Cloud Secret Manager implementieren. 
+        ◦ Mehrere Docker Images parallel bauen (Matrix-Strategie) für verbesserte Build-Performance. 
+        ◦ Web-UI für Deployments (internes Dashboard) zur vereinfachten Verwaltung. 
+
+    • GitHub Issues Management [NEU am 25.07.2025]: 
+        ◦ Für jede Aufgabe wurde ein dediziertes GitHub Issue im Repository angelegt mit detaillierter Beschreibung, Akzeptanzkriterien und entsprechenden Labels (kategorie-a bis kategorie-d). 
+        ◦ Issues sind mit Prioritäten versehen (priority-1 für kritische Aufgaben wie Cloud Build und Firebase-Authentifizierung, priority-2 für wichtige Aufgaben). 
+        ◦ Ein automatisiertes Issue-Creation-Script (create_github_issues.py) wurde entwickelt, um die strukturierte Aufgabenverteilung zu unterstützen. 
+        ◦ Jeder Agent kann direkt über die zugewiesenen GitHub Issues arbeiten und den Fortschritt transparent dokumentieren. 
+
+    • Agenten-Koordination [NEU am 25.07.2025]: 
+        ◦ Das team.py-System wurde erweitert, um die spezifischen Agentenrollen (QA/Testing, Data/AI, Backend, Documentation) zu verwalten. 
+        ◦ Jeder Agent erhält klar definierte Aufgaben mit spezifischen Skills-Anforderungen und Verantwortungsbereichen. 
+        ◦ Die Aufgabenzuweisung erfolgt nach Rolle, Skills, Verfügbarkeit und Verantwortungsbereich, so dass jeder Agent direkt loslegen kann. 
+        ◦ Kommunikation und Feedback erfolgen direkt über GitHub Issues, Canvas oder regelmäßige Standups. 
+
+Diese strukturierte Herangehensweise stellt sicher, dass alle kritischen Aufgaben systematisch abgearbeitet werden und gleichzeitig die Transparenz und Nachvollziehbarkeit der Entwicklungsarbeiten gewährleistet ist. Die Kategorisierung ermöglicht eine effiziente Ressourcenallokation und priorisiert deployment- und security-kritische Aufgaben.
