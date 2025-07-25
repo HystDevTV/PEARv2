@@ -1,5 +1,7 @@
 
 import logging
+from dotenv import load_dotenv
+load_dotenv()
 import mysql.connector
 from mysql.connector import Error
 import time
@@ -79,10 +81,11 @@ class TaskManager:
 
 class DatabaseConnector:
     def __init__(self):
-        self.host = "127.0.0.1"
-        self.user = "pear_user"
-        self.password = "SecurePear2024!"
-        self.database = "pear_db"
+        import os
+        self.host = os.environ.get("DB_HOST", "127.0.0.1")
+        self.user = os.environ.get("DB_USER", "pear_user")
+        self.password = os.environ.get("DB_PASSWORD", "SecurePear2024!")
+        self.database = os.environ.get("DB_NAME", "pear_db")
         self.connection = None
 
     def connect(self) -> bool:
