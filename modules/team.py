@@ -68,6 +68,9 @@ class TaskManager:
         return "Koordination"
 
     def assign_tasks(self):
+        # Vor der Aufgabenverteilung: Aufgabenlisten aller Agenten leeren!
+        for agent in self.agents:
+            agent.tasks.clear()
         # Nochmals: Nur Issues mit state='open' und ohne Label 'completed-by-agent' verarbeiten
         for issue in self.issues:
             if getattr(issue, 'state', 'open') != 'open':
